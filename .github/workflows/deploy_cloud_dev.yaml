@@ -26,6 +26,9 @@ jobs:
 
          - name: install-terraform
            uses: hashicorp/setup-terraform@v3
+          
+         - name: Getting OIDC logs
+           uses: github/actions-oidc-debugger@main
 
          - name: authenticate-with-aws
            uses: aws-actions/configure-aws-credentials@v4
