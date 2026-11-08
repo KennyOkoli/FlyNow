@@ -13,7 +13,7 @@ resource "aws_ecs_service" "flynow-ecs-frontend"{
     name = "flynow-web-${var.env}"
     cluster = aws_ecs_cluster.flynow-cluster.id
     task_definition = aws_ecs_task_definition.frontend-task-def.arn
-    desired_count = 2
+    desired_count = 0
     launch_type = "EC2"
 
     load_balancer {
@@ -26,7 +26,7 @@ resource "aws_ecs_service" "flynow-ecs-frontend"{
        subnets = var.private-subnets
        security_groups = [aws_security_group.task-sg-frontend.id]
     }
-    
+
     ordered_placement_strategy {
        type = "spread"
        field = "instanceId"
