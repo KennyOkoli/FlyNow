@@ -15,12 +15,12 @@ defaults:
 
 permissions:
   id-token: write
-  content: read
+  contents: read
 
 jobs:
     authenticate-plan:
       runs-on: ubuntu-latest
-      environments: dev-cloud
+      environment: dev-cloud
       steps:
          - name: pull-repo
            uses: actions/checkout@v4
