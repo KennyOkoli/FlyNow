@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "frontend-task-def" {
         }]
         environment = [
             {
-                name = ENDPOINT
+                name = "ENDPOINT"
                 value = var.backend
             }
             ]
