@@ -1,20 +1,9 @@
 # Confirm the container ports
-variable "private-subnets" {}
-#variable "nacl" {}
-#variable "db-sg" {}
-#variable "public" {}
-#variable "s3" {}
-variable "secrets" {}
-variable "vpc" {}
-#variable "target-arn" {}
-variable "env" {}
-
-
 
 resource "aws_ecs_service" "backend-service"{
     name = "backend-service-${var.env}"
     cluster = aws_ecs_cluster.flynow-cluster.id
-    task_definition = aws_ecs_task_definition.flynow-task-def.arn
+    task_definition = aws_ecs_task_definition.backend-task-def.arn
     desired_count = 2
     launch_type = "EC2"
 
@@ -23,7 +12,7 @@ resource "aws_ecs_service" "backend-service"{
        enabled = true
        service {
          port_name = "http"
-         discovery_name = "backend"
+         discovery_name = "backend-tasks"
          client_alias {
            dns_name = "backend"
            port = 3000
@@ -69,8 +58,3 @@ resource "aws_security_group_rule" "backend-sg-rule-2" {
     to_port = 65535
 }
 
-# resource "aws_network_acl_association" "backend-subnet-nacl" {
-#     count = 2
-#     network_acl_id = var.nacl
-#     subnet_id = var.private-subnets[count.index]
-# }

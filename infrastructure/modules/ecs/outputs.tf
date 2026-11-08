@@ -1,6 +1,10 @@
-output "ecs-sg" {
-    value = aws_security_group.task-sg.id
+output "ecs-sg-frontend" {
+    value = aws_security_group.task-sg-frontend.id
 }
+
+# output "ecs-sg-backend" {
+#     value = aws_security_group.backend-sg.id
+# }
 
 output "f-end-task-def" {
     value = aws_ecs_task_definition.frontend-task-def.arn
@@ -16,4 +20,8 @@ output "f-end-ecs" {
 
 output "b-end-ecs" {
     value = aws_ecs_service.backend-service.arn
+}
+
+output "ecr-arn" {
+    value = aws_ecr_repository.flynow-repo.arn
 }

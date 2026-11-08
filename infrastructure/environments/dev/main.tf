@@ -16,11 +16,6 @@ module "secrets" {
     env = var.env
 }
 
-module "s3" {
-    source = "../../modules/s3"
-    env = var.env
-}
-
 module "IdentityCenter" {
     source = "../../modules/IdentityCenter"
     providers = {
@@ -41,7 +36,6 @@ module "github" {
 
 module "ecs" {
     source = "../../modules/ecs"
-    s3 = module.s3.s3-arn
     secrets = module.secrets.secret-manager-arn
     vpc = module.vpc.vpc-id
     db-sg = module.rds.db_sg
@@ -53,11 +47,7 @@ module "ecs" {
     db_name = module.rds.db_name
     db_username = module.rds.db_username
     db_password = module.rds.db_password
-    s3_bucket = module.s3.bucket-name
     env = var.env
-    task-def = var.task_def_dev
-    db-host = module.rds.db_host
-    backend = 
 }
 
 module "ec2" {
@@ -66,6 +56,6 @@ module "ec2" {
     public-cidr = module.vpc.public-cidr
     vpc-prv-subnets = module.vpc.private-subnets
     public-subnet = module.vpc.vpc-public-subnet
-    ecs-sg-var = module.ecs.ecs-sg
+    ecs-sg-var = module.ecs.ecs-sg-frontend
     env = var.env
 }

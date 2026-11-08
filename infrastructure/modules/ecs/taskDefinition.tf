@@ -9,8 +9,11 @@ variable "db_host" {
 variable "db_name" {}
 variable "db_username" {}
 variable "db_password" {}
-variable "s3_bucket" {}
-variable "env" {}
+
+
+variable "backend-url" {
+    default = "http://backend:8080"
+}
 
 resource "aws_ecs_task_definition" "frontend-task-def" {
     network_mode = "awsvpc"
@@ -31,16 +34,14 @@ resource "aws_ecs_task_definition" "frontend-task-def" {
         environment = [
             {
                 name = "ENDPOINT"
-                value = var.backend
+                value = var.backend-url
             }
             ]
         }
     ])
 }
 
-variable "backend" {
-    default = aws_ecs_service.backend_service.service_connect_configuration
-}
+
 
 resource "aws_ecs_task_definition" "backend-task-def" {
     network_mode = "awsvpc"

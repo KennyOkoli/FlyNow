@@ -48,7 +48,7 @@ resource "aws_db_instance" "flynow_db"{
     multi_az = false
     skip_final_snapshot = true
     db_subnet_group_name = aws_db_subnet_group.db_subnet_group.name
-    vpc_security_group_ids = [aws_security_group.mysql_db_sg.id]
+    vpc_security_group_ids = [aws_security_group.db_sg.id]
     parameter_group_name = aws_db_parameter_group.db_parameter.name
 }
 
