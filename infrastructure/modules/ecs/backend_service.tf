@@ -13,8 +13,8 @@ variable "env" {}
 
 resource "aws_ecs_service" "backend-service"{
     name = "backend-service-${var.env}"
-    cluster = aws_ecs_cluster.cloudsave-cluster.id
-    task_definition = aws_ecs_task_definition.cloudsave-task-def.arn
+    cluster = aws_ecs_cluster.flynow-cluster.id
+    task_definition = aws_ecs_task_definition.flynow-task-def.arn
     desired_count = 2
     launch_type = "EC2"
 

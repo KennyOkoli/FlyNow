@@ -39,7 +39,7 @@ resource "aws_ecs_task_definition" "frontend-task-def" {
 }
 
 variable "backend" {
-    default = aws_ecs_service.backend
+    default = aws_ecs_service.backend_service.service_connect_configuration
 }
 
 resource "aws_ecs_task_definition" "backend-task-def" {

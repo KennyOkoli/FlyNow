@@ -7,9 +7,6 @@ terraform {
   }
 }
 
-variable "identity_center_region" {
-    default = "us-east-1"
-}
 
 variable "ec2-arn" {}
 
@@ -23,7 +20,7 @@ variable "aws_region"{
     default = "af-south-1"
 }
 
-variable "s3-arn" {}
+
 variable "secret-arn" {}
 
 data "aws_ssoadmin_instances" "center" {} 
@@ -32,12 +29,11 @@ locals {
     idStore_id = tolist(data.aws_ssoadmin_instances.center.identity_store_ids)[0]
     Account_arn = tolist(data.aws_ssoadmin_instances.center.arns)[0]
 }
-variable "aws_provider" {}
+
 resource "aws_identitystore_user" "jeff" {
     identity_store_id = local.idStore_id
     user_name = "Jeff"
     display_name = "Jeff"
-    #provider = var.aws_provider
     name {
         given_name = "Jeff"
         family_name = "Okoli"
@@ -50,7 +46,6 @@ resource "aws_identitystore_user" "jeff" {
 resource "aws_ssoadmin_permission_set" "use_s3" {
     name = "use-s3"
     instance_arn = local.Account_arn
-    #provider = var.aws_provider
 }
 
 data "aws_iam_policy_document" "use_s3_policy" {
@@ -88,7 +83,6 @@ resource "aws_ssoadmin_permission_set_inline_policy" "use_s3_attachcment" {
     permission_set_arn = aws_ssoadmin_permission_set.use_s3.arn
     inline_policy = data.aws_iam_policy_document.use_s3_policy.json
     instance_arn = local.Account_arn
-    #provider = var.aws_provider
 }
 
 variable "account"{
@@ -99,7 +93,6 @@ variable "account"{
 resource "aws_ssoadmin_account_assignment" "jeff-account-permission" {
     instance_arn = local.Account_arn
     permission_set_arn = aws_ssoadmin_permission_set.use_s3.arn
-    #provider = var.aws_provider
 
     principal_type = "USER"
     principal_id = aws_identitystore_user.jeff.user_id

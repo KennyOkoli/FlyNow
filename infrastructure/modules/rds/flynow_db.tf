@@ -97,7 +97,7 @@ variable "az" {}
 resource "aws_subnet" "db_subnet" {
     count = 2
     vpc_id = var.vpc-id
-    cidr_block = "172.0.${count.index + 200}.0/24" # Change cidr block
+    cidr_block = "32.0.${count.index + 200}.0/24" # Change cidr block
     availability_zone = var.az[count.index]
     tags={
         name = var.db_subnet_tags[count.index]

@@ -7,8 +7,10 @@ terraform {
   }
 }
 
-resource "aws_ecs_cluster" "cloudsave-cluster" {
-    name = "cloudsave-cluster"
+variable "env" {}
+
+resource "aws_ecs_cluster" "flynow-cluster" {
+    name = "flynow-cluster-${var.env}"
     setting {
         name = "containerInsights"
         value = "enabled"
