@@ -8,6 +8,7 @@ locals {
   oidc_arn = data.aws_iam_openid_connect_provider.github-id.arn
 }
 
+
 data "aws_iam_policy_document" "oidc_policy_doc" {
     statement {
         effect = "Allow"
@@ -52,7 +53,7 @@ data "aws_iam_policy_document" "github-policy-doc" {
         "ecr:PutImage",
         "ecr:UploadLayerPart"
       ]
-      resources = ["*"]
+      resources = [var.ecr-arn]
     }
     statement {
       effect = "Allow"
@@ -62,7 +63,7 @@ data "aws_iam_policy_document" "github-policy-doc" {
         "ecs:UpdateService",
         "ecs:DescribeServices"     
       ]
-      resources = ["*"]
+      resources = [var.frontend-ecs-arn, var.backend-ecs-arn, var.frontend-task-def-arn, var.backend-task-def-arn]
     }
     statement {
       effect = "Allow"

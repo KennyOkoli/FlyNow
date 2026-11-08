@@ -1,5 +1,5 @@
 output "db_sg"{
-    value = aws_security_group.mysql_db_sg.id
+    value = aws_security_group.db_sg.id
 }
 
 output "ec2_arn" {
@@ -7,7 +7,7 @@ output "ec2_arn" {
 }
 
 output "db_name" {
-    value = aws_db_instance.CloudSave_db.db_name
+    value = aws_db_instance.flynow_db.db_name
 }
 
 output "db_username" {

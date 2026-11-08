@@ -1,19 +1,18 @@
 # Confirm the container ports
 # Update ECS lifecycle
+
 variable "private-subnets" {}
 variable "nacl" {}
 variable "db-sg" {}
 variable "public" {}
-variable "s3" {}
 variable "secrets" {}
 variable "vpc" {}
 variable "target-arn" {}
-variable "env" {}
 
 resource "aws_ecs_service" "flynow-ecs-frontend"{
     name = "flynow-web-${var.env}"
-    cluster = aws_ecs_cluster.cloudsave-cluster.id
-    task_definition = aws_ecs_task_definition.cloudsave-task-def.arn
+    cluster = aws_ecs_cluster.flynow-cluster.id
+    task_definition = aws_ecs_task_definition.frontend-task-def.arn
     desired_count = 2
     launch_type = "EC2"
 
@@ -25,8 +24,9 @@ resource "aws_ecs_service" "flynow-ecs-frontend"{
 
     network_configuration {
        subnets = var.private-subnets
-       security_groups = [aws_security_group.task-sg.id]
+       security_groups = [aws_security_group.task-sg-frontend.id]
     }
+    
     ordered_placement_strategy {
        type = "spread"
        field = "instanceId"

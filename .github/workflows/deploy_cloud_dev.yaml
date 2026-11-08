@@ -1,0 +1,37 @@
+name: Deploy cloud development infrastructure
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - "infrastructure/modules/**"
+      - "infrastructure/environments/dev/**"
+      - ".github/workflows/deploy_cloud_dev.yaml"
+
+defaults:
+  run:
+    working-directory: infrastructure/environments/dev
+
+permissions:
+  id-token: write
+  content: read
+
+jobs:
+    authenticate-plan:
+      runs-on: ubuntu-latest
+      environments: dev-cloud
+      steps:
+         - name: pull-repo
+           uses: actions/checkout@v4
+
+         - name: install-terraform
+           uses: hashicorp/setup-terraform@v3
+
+         - name: authenticate-with-aws
+           uses: aws-actions/configure-aws-credentials@v4
+           with:
+              role-to-assume: ${{vars.ROLE_ARN}}
+              aws-region: ${{vars.AWS_REGION}}
+         
+           run: "scripts/terraform_dev.sh"

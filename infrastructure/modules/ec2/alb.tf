@@ -2,7 +2,7 @@ variable "public-subnet" {}
 variable "ecs-sg-var" {}
 
 
-resource "aws_alb_target_group" "cloudsave-target-group" {
+resource "aws_alb_target_group" "flynow-target-group" {
     vpc_id = var.vpc_id
     target_type = "ip"
     protocol = "HTTP"
@@ -11,7 +11,7 @@ resource "aws_alb_target_group" "cloudsave-target-group" {
     health_check {
     protocol = "HTTP"
     port = 4000
-    path = "/" # look up on this
+    path = "/"
     interval = 10
     timeout = 5
     healthy_threshold = 3
@@ -19,23 +19,23 @@ resource "aws_alb_target_group" "cloudsave-target-group" {
     }
 }
 
-resource "aws_alb" "cloudsave-alb" {
-    name = "cloudsave-alb"
+resource "aws_alb" "flynow-alb" {
+    name = "flynow-alb"
     security_groups = [aws_security_group.alb-sg.id]
     subnets = var.public-subnet
     internal = false
     load_balancer_type = "application"
 }
 
-resource "aws_alb_listener" "cloudsave-alb-listener" {
-    load_balancer_arn = aws_alb.cloudsave-alb.id
+resource "aws_alb_listener" "flynow-alb-listener" {
+    load_balancer_arn = aws_alb.flynow-alb.id
     protocol = "HTTP"
     port = 80
     default_action {
       type = "forward"
       forward {
         target_group {
-          arn = aws_alb_target_group.cloudsave-target-group.arn
+          arn = aws_alb_target_group.flynow-target-group.arn
         }
       }
     }
