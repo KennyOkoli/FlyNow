@@ -7,7 +7,6 @@ on:
     paths:
       - "infrastructure/modules/**"
       - "infrastructure/environments/dev/**"
-      - ".github/workflows/deploy_cloud_dev.yaml"
 
 defaults:
   run:
@@ -34,4 +33,5 @@ jobs:
               role-to-assume: ${{vars.ROLE_ARN}}
               aws-region: ${{vars.AWS_REGION}}
          
+         - name: running-terraform-scripts
            run: "scripts/terraform_dev.sh"
