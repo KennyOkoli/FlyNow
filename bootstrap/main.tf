@@ -54,12 +54,9 @@ data "aws_iam_policy_document" "github-trust-policy" {
         condition {
             test = "StringLike"
             variable = "token.actions.githubusercontent.com:job_worflows_ref"
-            values = ["/KennyOkoli/FlyNow/.github/workflows/deploy_cloud_dev.yaml:*"]
-        }
-        condition {
-            test = "StringLike"
-            variable = "token.actions.githubusercontent.com:job_worflows_ref"
-            values = ["/KennyOkoli/FlyNow/.github/workflows/deploy_cloud_prod.yaml:*"]
+            values = [
+                "/KennyOkoli/FlyNow/.github/workflows/deploy_cloud_dev.yaml:*",
+                "/KennyOkoli/FlyNow/.github/workflows/deploy_cloud_prod.yaml:*"]
         }
     }
 }
