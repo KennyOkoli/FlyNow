@@ -13,4 +13,7 @@ resource "aws_ecs_cluster" "cloudsave-cluster" {
         name = "containerInsights"
         value = "enabled"
     }
+    service_connect_defaults {
+        namespace = aws_service_discovery_http_namespace.flynow-cloudmap.name
+    }
 }

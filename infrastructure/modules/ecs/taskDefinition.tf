@@ -12,16 +12,46 @@ variable "db_password" {}
 variable "s3_bucket" {}
 variable "env" {}
 
-resource "aws_ecs_task_definition" "cloudsave-task-def" {
+resource "aws_ecs_task_definition" "frontend-task-def" {
     network_mode = "awsvpc"
     requires_compatibilities = ["EC2"]
-    family = "web-app-${var.env}"
+    family = "frontend-web-${var.env}"
     execution_role_arn = aws_iam_role.task-def-role.arn
     task_role_arn = aws_iam_role.task-role.arn
 
     container_definitions = jsonencode([
         {
-        name = "flynow-web-${var.env}"
+        name = "frontend-${var.env}"
+        image = "nginx:latest"
+        cpu = 256
+        memory = 512
+        portMappings = [{
+            containerPort = 4000
+        }]
+        environment = [
+            {
+                name = ENDPOINT
+                value = var.backend
+            }
+            ]
+        }
+    ])
+}
+
+variable "backend" {
+    default = aws_ecs_service.backend
+}
+
+resource "aws_ecs_task_definition" "backend-task-def" {
+    network_mode = "awsvpc"
+    requires_compatibilities = ["EC2"]
+    family = "backend-web-${var.env}"
+    execution_role_arn = aws_iam_role.task-def-role.arn
+    task_role_arn = aws_iam_role.task-role.arn
+
+    container_definitions = jsonencode([
+        {
+        name = "backend-${var.env}"
         image = "nginx:latest"
         cpu = 256
         memory = 512
@@ -49,9 +79,6 @@ resource "aws_ecs_task_definition" "cloudsave-task-def" {
                 name = "DB_HOST"
                 value = var.db_host
             },
-            {   name = "S3_BUCKET"
-                value = var.s3_bucket
-            }
             ]
         }
     ])
