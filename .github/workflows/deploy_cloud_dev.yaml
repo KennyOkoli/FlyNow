@@ -27,9 +27,6 @@ jobs:
          - name: install-terraform
            uses: hashicorp/setup-terraform@v3
           
-         - name: Getting OIDC logs
-           uses: github/actions-oidc-debugger@main
-
          - name: authenticate-with-aws
            uses: aws-actions/configure-aws-credentials@v4
            with:
@@ -37,4 +34,4 @@ jobs:
               aws-region: ${{vars.AWS_REGION}}
          
          - name: running-terraform-scripts
-           run: "scripts/terraform_dev.sh"
+           run: "../../scripts/terraform_dev.sh"
