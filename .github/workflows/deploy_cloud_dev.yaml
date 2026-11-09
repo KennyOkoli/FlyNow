@@ -34,4 +34,4 @@ jobs:
               aws-region: ${{vars.AWS_REGION}}
          
          - name: running-terraform-scripts
-           run: "../../scripts/terraform_dev.sh"
+           run: "scripts/terraform_dev.sh"
