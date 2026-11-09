@@ -1,2 +1,4 @@
-sudo terraform init
-sudo terraform plan
+#!/bin/bash
+
+terraform init
+terraform plan
