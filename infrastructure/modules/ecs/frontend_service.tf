@@ -16,9 +16,14 @@ resource "aws_ecs_service" "flynow-ecs-frontend"{
     desired_count = 0
     launch_type = "EC2"
 
+    service_connect_configuration {
+       enabled = true
+       namespace = aws_service_discovery_http_namespace.flynow-cloudmap.arn
+    }
+
     load_balancer {
        target_group_arn = var.target-arn
-       container_name = "web-app-${var.env}"
+       container_name = "frontend-${var.env}"
        container_port = 4000
     }
 
@@ -27,7 +32,7 @@ resource "aws_ecs_service" "flynow-ecs-frontend"{
        security_groups = [aws_security_group.task-sg-frontend.id]
     }
 
-    ordered_placement_strategy {
+    ordered_placement_strategy { # Checkout more on ordered placement strategies using az
        type = "spread"
        field = "instanceId"
     }
