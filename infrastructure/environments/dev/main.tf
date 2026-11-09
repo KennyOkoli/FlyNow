@@ -59,3 +59,4 @@ module "ec2" {
     ecs-sg-var = module.ecs.ecs-sg-frontend
     env = var.env
 }
+
