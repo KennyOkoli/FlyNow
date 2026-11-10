@@ -141,7 +141,7 @@ resource "aws_route_table_association" "db_subnet_to_route" {
 }
 
 variable "private_subnets" {}
-
+/*
 resource "aws_instance" "db_ec2_jumphost" {
     ami = "ami-0527144c5a042f57d"
     instance_type = "t3.micro"
@@ -207,4 +207,4 @@ resource "aws_iam_role_policy_attachment" "ec2_role_policy" {
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
     name = "ec2_instance_profile"
     role = aws_iam_role.ec2_role.name   
-}
+}*/

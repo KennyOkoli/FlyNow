@@ -15,7 +15,7 @@ module "secrets" {
     source = "../../modules/secrets"
     env = var.env
 }
-
+/*
 module "IdentityCenter" {
     source = "../../modules/IdentityCenter"
     providers = {
@@ -23,7 +23,7 @@ module "IdentityCenter" {
     }
     secret-arn = module.secrets.secret-manager-arn
     ec2-arn = module.rds.ec2_arn
-}
+}*/
 
 module "github" {
     source = "../../modules/github"
