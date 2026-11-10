@@ -4,7 +4,7 @@ terraform {
         key = "dev/terraform.tfstate"
         region = "af-south-1"
       }
-   required_providers{
+    required_providers{
       aws = {
           source = "hashicorp/aws"
           version = "~>6"
