@@ -1,4 +1,9 @@
 terraform {
+    backend "s3" {
+        bucket = "flynow-dev-tfstate"
+        key = "dev/terraform.tfstate"
+        region = "af-south-1"
+      }
    required_providers{
       aws = {
           source = "hashicorp/aws"
