@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "frontend-task-def" {
         memory = 512
         portMappings = [{
             name = "http"
-            containerPort = 4000
+            containerPort = 5173
             protocol = "tcp"
         }]
         environment = [
@@ -60,7 +60,7 @@ resource "aws_ecs_task_definition" "backend-task-def" {
         memory = 512
         portMappings = [{
             name = "http"
-            containerPort = 4000
+            containerPort = 8080
             protocol = "tcp"
         }]
         environment = [
@@ -84,8 +84,33 @@ resource "aws_ecs_task_definition" "backend-task-def" {
                 name = "DB_HOST"
                 value = var.db_host
             },
+            {
+                name = "SABRE_USER_ID"
+                value = var.sabre-user-id
+            },
+            {
+                name = "SABRE_CLIENT_ID"
+                value = var.sabre-client-id
+            },
+            {
+                name = "SABRE_BASE_URL"
+                value = var.sabre-base-url
+            },
+            {
+                name = "SABRE_PCC"
+                value = var.PCC
+            },
+            {
+                name = "USE_MOCK"
+                value = var.use_mock
+            }
             ]
         }
     ])
 }
 
+variable "sabre-user-id" {}
+variable "sabre-client-id" {}
+variable "sabre-base-url" {}
+variable "PCC" {}
+variable "use_mock" {}

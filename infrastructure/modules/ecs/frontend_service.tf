@@ -24,7 +24,7 @@ resource "aws_ecs_service" "flynow-ecs-frontend"{
     load_balancer {
        target_group_arn = var.target-arn
        container_name = "frontend-${var.env}"
-       container_port = 4000
+       container_port = 5173
     }
 
     network_configuration {
@@ -36,9 +36,9 @@ resource "aws_ecs_service" "flynow-ecs-frontend"{
        type = "spread"
        field = "instanceId"
     }
-    /*lifecycle {
+    lifecycle {
       ignore_changes = [task_definition]
-    }*/
+    }
 }
 
 resource "aws_security_group" "task-sg-frontend" {
@@ -53,8 +53,8 @@ resource "aws_security_group_rule" "task-rule-1" {
     security_group_id = aws_security_group.task-sg-frontend.id
     source_security_group_id = var.alb_sg
     protocol = "tcp"
-    from_port = 4000
-    to_port = 4000
+    from_port = 5173
+    to_port = 5173
 }
 
 resource "aws_security_group_rule" "task-rule-3" {

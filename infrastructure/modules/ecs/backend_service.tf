@@ -15,7 +15,7 @@ resource "aws_ecs_service" "backend-service"{
          discovery_name = "backend-tasks"
          client_alias {
            dns_name = "backend"
-           port = 3000
+           port = 8080
          }
        }
     }
@@ -45,8 +45,8 @@ resource "aws_security_group_rule" "backend-sg-rule-1" {
     security_group_id = aws_security_group.backend-sg.id
     source_security_group_id = aws_security_group.task-sg-frontend.id
     protocol = "tcp"
-    from_port = 4000
-    to_port = 4000
+    from_port = 8080
+    to_port = 8080
 }
 
 resource "aws_security_group_rule" "backend-sg-rule-2" {
