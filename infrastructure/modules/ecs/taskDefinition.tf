@@ -29,7 +29,9 @@ resource "aws_ecs_task_definition" "frontend-task-def" {
         cpu = 256
         memory = 512
         portMappings = [{
+            port_name = "http"
             containerPort = 4000
+            protocol = "tcp"
         }]
         environment = [
             {
@@ -57,7 +59,9 @@ resource "aws_ecs_task_definition" "backend-task-def" {
         cpu = 256
         memory = 512
         portMappings = [{
+            port_name = "http"
             containerPort = 4000
+            protocol = "tcp"
         }]
         environment = [
             {   
