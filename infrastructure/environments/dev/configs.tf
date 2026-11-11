@@ -24,3 +24,23 @@ provider "aws" {
 variable "env" {
     default = "dev"
 }
+
+variable "sabre_user_id" {
+    default = "V1:j5wo3fibee9oowp3:DEVCENTER:EXT"
+}
+
+variable "sabre-client-id" {
+    default = "V1:j5wo3fibee9oowp3:DEVCENTER:EXT"
+}
+
+variable "sabre-base-url" {
+    default = "https://api.cert.platform.sabre.com/v2/auth/token"
+}
+
+variable "PCC" {
+    default = "S5OM"
+}
+
+variable "use_mock" {
+    default = "false"
+}

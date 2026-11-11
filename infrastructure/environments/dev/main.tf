@@ -15,15 +15,6 @@ module "secrets" {
     source = "../../modules/secrets"
     env = var.env
 }
-/*
-module "IdentityCenter" {
-    source = "../../modules/IdentityCenter"
-    providers = {
-        aws = aws.sso-region
-    }
-    secret-arn = module.secrets.secret-manager-arn
-    ec2-arn = module.rds.ec2_arn
-}*/
 
 module "github" {
     source = "../../modules/github"
@@ -48,6 +39,11 @@ module "ecs" {
     db_username = module.rds.db_username
     db_password = module.rds.db_password
     env = var.env
+    sabre-base-url = var.sabre-base-url
+    sabre-client-id = var.sabre-client-id
+    sabre-user-id = var.sabre_user_id
+    use_mock = var.use_mock
+    PCC = var.PCC
 }
 
 module "ec2" {
@@ -59,11 +55,3 @@ module "ec2" {
     ecs-sg-var = module.ecs.ecs-sg-frontend
     env = var.env
 }
-
-
-
-
-
-
-
-
