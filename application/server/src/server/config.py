@@ -1,6 +1,7 @@
 from functools import lru_cache
 
 from pydantic import SecretStr
+from sqlalchemy.engine import URL
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,7 +17,15 @@ class Settings(BaseSettings):
     use_mock: bool | None = None
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
     search_ttl_minutes: int = 30
-    database_url: str = "sqlite+aiosqlite:///./flynow.db"
+    # Database: either one DATABASE_URL, or the parts (what the ECS task definition passes).
+    # With neither, a local SQLite file is used.
+    database_url: str = ""
+    db_host: str = ""
+    db_port: int = 3306
+    db_name: str = ""
+    db_username: str = ""
+    db_password: SecretStr = SecretStr("")
+    db_driver: str = "mysql+aiomysql"
 
     @property
     def resolved_client_id(self) -> str:
@@ -42,6 +51,22 @@ class Settings(BaseSettings):
         if self.use_mock is not None:
             return self.use_mock
         return not self.has_credentials
+
+    @property
+    def resolved_database_url(self) -> str:
+        if self.database_url:
+            return self.database_url
+        if self.db_host and self.db_name:
+            # URL.create escapes special characters in the password, which a hand-built string would not.
+            return URL.create(
+                self.db_driver,
+                username=self.db_username or None,
+                password=self.db_password.get_secret_value() or None,
+                host=self.db_host,
+                port=self.db_port,
+                database=self.db_name,
+            ).render_as_string(hide_password=False)
+        return "sqlite+aiosqlite:///./flynow.db"
 
     @property
     def cors_origin_list(self) -> list[str]:

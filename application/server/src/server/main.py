@@ -31,7 +31,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.http = client
     app.state.cache = SearchCache(timedelta(minutes=settings.search_ttl_minutes))
     app.state.provider = MockProvider() if settings.mock_enabled else SabreProvider(client, settings)
-    engine = make_engine(settings.database_url)
+    engine = make_engine(settings.resolved_database_url)
     await create_tables(engine)
     app.state.db = make_sessionmaker(engine)
     logger.info("Flight provider: %s", app.state.provider.name)

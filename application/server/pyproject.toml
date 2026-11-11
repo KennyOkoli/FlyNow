@@ -7,7 +7,9 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "aiomysql>=0.3.2",
     "aiosqlite>=0.22.1",
+    "cryptography>=50.0.2",
     "fastapi>=0.162.2",
     "httpx>=0.28.1",
     "pydantic-settings>=2.16.2",
