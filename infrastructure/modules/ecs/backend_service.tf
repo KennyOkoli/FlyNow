@@ -15,7 +15,7 @@ resource "aws_ecs_service" "backend-service"{
          discovery_name = "backend-tasks"
          client_alias {
            dns_name = "backend"
-           port = 8080
+           port = 8000
          }
        }
     }

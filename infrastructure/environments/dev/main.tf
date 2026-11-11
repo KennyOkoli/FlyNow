@@ -44,6 +44,7 @@ module "ecs" {
     sabre-user-id = var.sabre_user_id
     use_mock = var.use_mock
     PCC = var.PCC
+    secret-manager = module.secrets.secret-id
 }
 
 module "ec2" {

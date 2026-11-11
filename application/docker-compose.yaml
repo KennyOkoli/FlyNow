@@ -1,0 +1,21 @@
+services:
+    frontend:
+       build: 
+         context: "./web"
+       ports:
+        - "3000:8080"
+    backend:
+       build: 
+         context: "./server"
+         dockerfile: "Dockerfile.dev"
+       environment:
+         SABRE_USER_ID: "V1:j5wo3fibee9oowp3:DEVCENTER:EXT"
+         SABRE_PASSWORD: "Gyd2E0Lk"
+         SABRE_PCC: "S5OM"
+         SABRE_CLIENT_ID: "V1:j5wo3fibee9oowp3:DEVCENTER:EXT"
+         SABRE_CLIENT_SECRET: "Gyd2E0Lk"
+         SABRE_BASE_URL: "https://api.cert.platform.sabre.com/v2/auth/token"
+         USE_MOCK: false
+         DATABASE_URL: "sqlite+aiosqlite:///./flynow.db"
+       ports:
+        - 8080:8080
