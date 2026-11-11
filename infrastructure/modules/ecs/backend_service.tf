@@ -45,8 +45,8 @@ resource "aws_security_group_rule" "backend-sg-rule-1" {
     security_group_id = aws_security_group.backend-sg.id
     source_security_group_id = aws_security_group.task-sg-frontend.id
     protocol = "tcp"
-    from_port = 8080
-    to_port = 8080
+    from_port = 8000
+    to_port = 8000
 }
 
 resource "aws_security_group_rule" "backend-sg-rule-2" {

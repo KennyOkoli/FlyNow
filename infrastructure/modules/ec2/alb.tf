@@ -19,6 +19,23 @@ resource "aws_alb_target_group" "flynow-target-group" {
     }
 }
 
+resource "aws_alb_target_group" "flynow-alb-target-group" {
+    vpc_id = var.vpc_id
+    target_type = "ip"
+    protocol = "HTTP"
+    port = 80
+    
+    health_check {
+    protocol = "HTTP"
+    port = 80
+    path = "/"
+    interval = 10
+    timeout = 5
+    healthy_threshold = 3
+    unhealthy_threshold = 2
+    }
+}
+
 resource "aws_alb" "flynow-alb" {
     name = "flynow-alb"
     security_groups = [aws_security_group.alb-sg.id]
@@ -35,7 +52,7 @@ resource "aws_alb_listener" "flynow-alb-listener" {
       type = "forward"
       forward {
         target_group {
-          arn = aws_alb_target_group.flynow-target-group.arn
+          arn = aws_alb_target_group.flynow-alb-target-group.arn
         }
       }
     }
