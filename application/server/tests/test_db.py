@@ -36,3 +36,33 @@ def test_invalid_search_is_not_saved(client: TestClient, roundtrip_body: dict) -
     response = client.post("/api/flights/search", json={**roundtrip_body, "destination": "LOS"})
     assert response.status_code == 400
     assert len(_rows(client)) == before
+
+
+def test_database_url_from_parts() -> None:
+    from server.config import Settings
+
+    s = Settings(
+        _env_file=None,  # pyright: ignore[reportCallIssue]
+        database_url="",
+        db_host="flynow-dev.abc123.eu-west-2.rds.amazonaws.com",
+        db_name="flynow_db_dev",
+        db_username="admin",
+        db_password="p@ss:word/1",
+    )
+    assert s.resolved_database_url == (
+        "mysql+aiomysql://admin:p%40ss%3Aword%2F1@flynow-dev.abc123.eu-west-2.rds.amazonaws.com:3306/flynow_db_dev"
+    )
+
+
+def test_database_url_wins_over_parts() -> None:
+    from server.config import Settings
+
+    s = Settings(_env_file=None, database_url="sqlite+aiosqlite:///./x.db", db_host="h", db_name="n")  # pyright: ignore[reportCallIssue]
+    assert s.resolved_database_url == "sqlite+aiosqlite:///./x.db"
+
+
+def test_sqlite_when_nothing_set() -> None:
+    from server.config import Settings
+
+    s = Settings(_env_file=None, database_url="")  # pyright: ignore[reportCallIssue]
+    assert s.resolved_database_url == "sqlite+aiosqlite:///./flynow.db"

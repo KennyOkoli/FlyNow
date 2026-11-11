@@ -34,7 +34,10 @@ def make_engine(url: str) -> AsyncEngine:
     if url.endswith(":memory:"):
         # Each SQLite connection gets its own in-memory database, so share one.
         return create_async_engine(url, poolclass=StaticPool, connect_args={"check_same_thread": False})
-    return create_async_engine(url)
+    if url.startswith("sqlite"):
+        return create_async_engine(url)
+    # A server database (MySQL on RDS) closes idle connections: test each one before use and recycle hourly.
+    return create_async_engine(url, pool_pre_ping=True, pool_recycle=3600)
 
 
 def make_sessionmaker(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
