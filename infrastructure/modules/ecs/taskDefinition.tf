@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "frontend-task-def" {
         memory = 512
         portMappings = [{
             name = "http"
-            containerPort = 5173
+            containerPort = 80
             protocol = "tcp"
         }]
         environment = [

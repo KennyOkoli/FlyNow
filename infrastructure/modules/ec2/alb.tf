@@ -6,11 +6,11 @@ resource "aws_alb_target_group" "flynow-target-group" {
     vpc_id = var.vpc_id
     target_type = "ip"
     protocol = "HTTP"
-    port = 4000
+    port = 80
     
     health_check {
     protocol = "HTTP"
-    port = 4000
+    port = 80
     path = "/"
     interval = 10
     timeout = 5
@@ -60,6 +60,6 @@ resource "aws_security_group_rule" "alb-rule-4" {
     security_group_id = aws_security_group.alb-sg.id
     source_security_group_id = var.ecs-sg-var
     protocol = "tcp"
-    from_port = 4000
-    to_port = 4000
+    from_port = 80
+    to_port = 80
 }
