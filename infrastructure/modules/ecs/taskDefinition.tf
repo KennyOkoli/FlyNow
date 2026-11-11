@@ -9,12 +9,19 @@ variable "db_host" {
 variable "db_name" {}
 variable "db_username" {}
 variable "db_password" {}
-
+variable "secret-manager" {}
 
 variable "backend-url" {
     default = "http://backend:8080"
 }
 
+data "aws_secretsmanager_secret_version" "sabre-secrets" {
+    secret_id = var.secret-manager
+}
+
+locals {
+    secrets = jsondecode(data.aws_secretsmanager_secret_version.sabre-secrets.secret_string)
+}
 resource "aws_ecs_task_definition" "frontend-task-def" {
     network_mode = "awsvpc"
     requires_compatibilities = ["EC2"]
@@ -60,7 +67,7 @@ resource "aws_ecs_task_definition" "backend-task-def" {
         memory = 512
         portMappings = [{
             name = "http"
-            containerPort = 8080
+            containerPort = 8000
             protocol = "tcp"
         }]
         environment = [
@@ -103,6 +110,14 @@ resource "aws_ecs_task_definition" "backend-task-def" {
             {
                 name = "USE_MOCK"
                 value = var.use_mock
+            },
+            {
+                name = "SABRE_PASSWORD"
+                value = local.secrets.sabre_password
+            },
+            {
+                name = "SABRE_CLIENT_SECRET"
+                value = local.secrets.sabre_client_secret
             }
             ]
         }
