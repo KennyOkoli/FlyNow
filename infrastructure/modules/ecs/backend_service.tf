@@ -12,9 +12,9 @@ resource "aws_ecs_service" "backend-service"{
        enabled = true
        service {
          port_name = "http"
-         discovery_name = "backend-tasks"
+         discovery_name = "backend-tasks-${var.env}"
          client_alias {
-           dns_name = "backend"
+           dns_name = "backend-${var.env}"
            port = 8000
          }
        }

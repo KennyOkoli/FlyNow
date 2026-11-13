@@ -1,3 +1,14 @@
+variable "sabre-user-id" {}
+
+variable "sabre-client-id" {}
+
+variable "sabre-base-url" {}
+
+variable "PCC" {}
+
+variable "use_mock" {}
+
+
 output "ecs-sg-frontend" {
     value = aws_security_group.task-sg-frontend.id
 }
