@@ -47,24 +47,24 @@ jobs:
              docker logs flynow-debug
 
 
-  # push_to_ecr:
-  #   runs-on: ubuntu-latest
-  #   needs: build_and_test
-  #   steps:
-  #   - uses: actions/checkout@v4
+  push_to_ecr:
+    runs-on: ubuntu-latest
+    needs: build_and_test
+    steps:
+    - uses: actions/checkout@v4
 
-  #   - name: get identity
-  #     uses: aws-actions/configure-aws-credentials@v4
-  #     with:
-  #        role-to-assume: arn:aws:iam::871145212791:role/github-role-dev
-  #        aws-region: af-south-1
+    - name: get identity
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+         role-to-assume: ${{vars.ROLE}}
+         aws-region: ${{vars.REGION}}
     
-  #   - name: test_credentials
-  #     run: aws sts get-caller-identity
+    - name: test_credentials
+      run: aws sts get-caller-identity
 
-  #   - name: login_ecr_service
-  #     id: login-ecr
-  #     uses: aws-actions/amazon-ecr-login@v2
+    - name: login_ecr_service
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
     
   #   - name: get-ecr-repo
   #     id: repo
