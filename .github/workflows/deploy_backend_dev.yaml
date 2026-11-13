@@ -52,7 +52,10 @@ jobs:
     needs: build_and_test
     steps:
     - uses: actions/checkout@v4
-
+  
+    - name: debug_region
+      runs: echo "Region = ${{vars.REGION}}"
+      
     - name: get identity
       uses: aws-actions/configure-aws-credentials@v4
       with:
