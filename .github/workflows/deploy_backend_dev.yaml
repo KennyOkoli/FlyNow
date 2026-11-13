@@ -27,8 +27,8 @@ jobs:
 
       - name: build-test
         run: |
-             docker run -d --name flynow-debug -p 8080:80 \
-             -e SABRE_CLIENT_SECRET=${{secrets.SABRE_CLIENT_SECRET}}\
+             docker run -d --name flynow-debug -p 8080:8000 \
+             -e SABRE_CLIENT_SECRET="${{secrets.SABRE_CLIENT_SECRET}}"\
              -e SABRE_CLIENT_ID=${{vars.SABRE_CLIENT_ID}} \
              -e SABRE_PCC=${{vars.SABRE_PCC}} \
              -e SABRE_BASE_URL=${{vars.SABRE_BASE_URL}} \
