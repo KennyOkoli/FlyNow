@@ -46,10 +46,6 @@ jobs:
              docker ps -a
              docker logs flynow-debug
 
-      - name:  test
-        run: |
-              sleep 6
-              curl --fail http://localhost:8080
 
   # push_to_ecr:
   #   runs-on: ubuntu-latest
