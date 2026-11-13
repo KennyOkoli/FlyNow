@@ -4,7 +4,7 @@ variable "db_port" {
     default = "3306"
 }
 variable "db_host" {
-    default = "mysql"
+    default = "flynow-dev.c3aca6ccc4z8.af-south-1.rds.amazonaws.com"
 }
 variable "db_name" {}
 variable "db_username" {}
@@ -12,7 +12,7 @@ variable "db_password" {}
 variable "secret-manager" {}
 
 variable "backend-url" {
-    default = "http://backend:8080"
+    default = "http://backend:8000"
 }
 
 data "aws_secretsmanager_secret_version" "sabre-secrets" {

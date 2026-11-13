@@ -1,8 +1,4 @@
-# Local copy of the AWS setup: nginx frontend -> FastAPI backend -> MySQL.
-# Sabre credentials come from server/.env (copy server/.env.example). Nothing secret lives in this file.
-#   docker compose up --build    then open http://localhost:3000
-services:
-  frontend:
+frontend:
     build: ./web
     ports:
       - "3000:80"
@@ -11,7 +7,7 @@ services:
     depends_on:
       - backend
 
-  backend:
+backend:
     build: ./server
     env_file:
       - path: ./server/.env
@@ -30,7 +26,7 @@ services:
         condition: service_healthy
 
   # Stands in for RDS (MySQL 8.4, same as Terraform). Local throwaway data only.
-  db:
+db:
     image: mysql:8.4
     environment:
       MYSQL_DATABASE: flynow_db_local

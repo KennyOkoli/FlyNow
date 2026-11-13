@@ -1,5 +1,5 @@
 output "target" {
-    value = aws_alb_target_group.flynow-target-group.arn
+    value = aws_alb_target_group.flynow-alb-target-group.arn
 }
 
 output "alb-sg" {
