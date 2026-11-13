@@ -35,10 +35,11 @@ resource "aws_ecs_service" "flynow-ecs-frontend"{
     ordered_placement_strategy { # Checkout more on ordered placement strategies using az
        type = "spread"
        field = "instanceId"
-    }/*
+    }
+    
     lifecycle {
       ignore_changes = [task_definition]
-    }*/
+    }
 }
 
 resource "aws_security_group" "task-sg-frontend" {
