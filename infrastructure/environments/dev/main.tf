@@ -45,6 +45,7 @@ module "ecs" {
     use_mock = var.use_mock
     PCC = var.PCC
     secret-manager = module.secrets.secret-id
+    db_host = module.rds.db_endpoint
 }
 
 module "ec2" {

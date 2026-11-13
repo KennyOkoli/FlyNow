@@ -3,16 +3,14 @@
 variable "db_port" {
     default = "3306"
 }
-variable "db_host" {
-    default = "flynow-dev.c3aca6ccc4z8.af-south-1.rds.amazonaws.com"
-}
+variable "db_host" {}
 variable "db_name" {}
 variable "db_username" {}
 variable "db_password" {}
 variable "secret-manager" {}
 
 variable "backend-url" {
-    default = "http://backend:8000"
+    default = "http://backend-dev:8000"
 }
 
 data "aws_secretsmanager_secret_version" "sabre-secrets" {
@@ -124,8 +122,3 @@ resource "aws_ecs_task_definition" "backend-task-def" {
     ])
 }
 
-variable "sabre-user-id" {}
-variable "sabre-client-id" {}
-variable "sabre-base-url" {}
-variable "PCC" {}
-variable "use_mock" {}
