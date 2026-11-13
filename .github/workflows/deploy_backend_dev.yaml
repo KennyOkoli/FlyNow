@@ -44,7 +44,7 @@ jobs:
 
              sleep 3
              docker ps -a
-             docker logs flownow-debug
+             docker logs flynow-debug
 
       - name:  test
         run: |
