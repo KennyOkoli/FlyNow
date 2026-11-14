@@ -54,8 +54,7 @@ data "aws_iam_policy_document" "github-policy-doc" {
         "ecr:InitiateLayerUpload",
         "ecr:PutImage",
         "ecr:UploadLayerPart",
-        "ecr:CompleteLayerUpload",
-        "ecr:PutImage",
+        "ecr:BatchGetImage"
       ]
       resources = [var.ecr-arn]
     }
@@ -72,10 +71,15 @@ data "aws_iam_policy_document" "github-policy-doc" {
     statement {
       effect = "Allow"
       actions = ["iam:PassRole"]
-      resources = ["*"] # Specify what role to pass
+      resources = [
+        var.task-role,
+        var.task-def-role
+      ] 
     }
 }
 
+variable "task-role" {}
+variable "task-def-role" {}
 resource "aws_iam_role_policy" "github-role-attachment" {
    role = aws_iam_role.github-role.id
    policy = data.aws_iam_policy_document.github-policy-doc.json

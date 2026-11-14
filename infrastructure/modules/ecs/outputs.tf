@@ -36,3 +36,11 @@ output "b-end-ecs" {
 output "ecr-arn" {
     value = aws_ecr_repository.flynow-repo.arn
 }
+
+output "task_role" {
+    value = aws_iam_role.task-role.arn
+}
+
+output "task_def_role" {
+    value = aws_iam_role.task-def-role.arn
+}
