@@ -1,5 +1,3 @@
-# Create log groups
-
 resource "aws_iam_role" "task-role" {
     name = "task-role-${var.env}"
     assume_role_policy = data.aws_iam_policy_document.task_def_trust.json
@@ -23,7 +21,6 @@ data "aws_iam_policy_document" "task-actions" {
     }
 }
 
-
 data "aws_iam_policy_document" "task_def_trust" {
     statement {
       effect = "Allow"
@@ -36,7 +33,7 @@ data "aws_iam_policy_document" "task_def_trust" {
 }
 
 resource "aws_iam_role" "task-def-role" {
-    name = "task-def-role"
+    name = "task-def-role-${var.env}"
     assume_role_policy = data.aws_iam_policy_document.task_def_trust.json
 }
 
@@ -53,14 +50,13 @@ data "aws_iam_policy_document" "role-policy" {
         "ecr:BatchGetImage",
         "ecr:GetDownloadUrlForLayer",
         "ecr:BatchCheckLayerAvailability",
-        "ecr:InitiateLayerUpload",
-        "ecr:CompleteLayerUpload",
-        "ecr:PutImage",
-        "ecr:UploadLayerPart",
         "logs:CreateLogStream",
         "logs:PutLogEvents"
         ]
-        resources = [aws_ecr_repository.flynow-repo.arn]
+        resources = [
+            aws_ecr_repository.flynow-repo.arn,
+            aws_cloudwatch_log_group.flynow-log-group.arn
+            ]
     }
     statement {
         effect = "Allow"
