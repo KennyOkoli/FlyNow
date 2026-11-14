@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "role-policy" {
         "ecr:BatchGetImage",
         "ecr:GetDownloadUrlForLayer",
         "ecr:BatchCheckLayerAvailability",
-        "ecr:InitiateLaterUpload",
+        "ecr:InitiateLayerUpload",
         "ecr:CompleteLayerUpload",
         "ecr:PutImage",
         "ecr:UploadLayerPart",
