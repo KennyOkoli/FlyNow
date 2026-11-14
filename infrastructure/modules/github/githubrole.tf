@@ -31,8 +31,10 @@ data "aws_iam_policy_document" "oidc_policy_doc" {
     }
 }
 
+variable "env" {}
+
 resource "aws_iam_role" "github-role" {
-    name = "github-role"
+    name = "github-role-${var.env}"
     assume_role_policy = data.aws_iam_policy_document.oidc_policy_doc.json
 }
 

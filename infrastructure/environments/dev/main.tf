@@ -23,6 +23,7 @@ module "github" {
     backend-ecs-arn = module.ecs.b-end-ecs
     frontend-task-def-arn = module.ecs.f-end-task-def
     backend-task-def-arn = module.ecs.b-end-task-def
+    env = var.env
 }
 
 module "ecs" {
