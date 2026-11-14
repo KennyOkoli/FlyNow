@@ -85,7 +85,7 @@ jobs:
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
           task-definition-family: ${{vars.TASK_FAMILY}}
-          container-name: ${{vars.IMAGE}}
+          container-name: ${{vars.COMTAINER}}
           image: ${{steps.repo.outputs.repo_url}}
 
     - name: update-ecs
