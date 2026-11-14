@@ -4,7 +4,7 @@ dnf update -y
 systemctl enable amazon-ssm-agent
 systemctl start amazon-ssm-agent
  
-echo "ECS_CLUSTER=flynow-cluster" > /etc/ecs/ecs.config
+echo "ECS_CLUSTER=flynow-cluster-${environment}" > /etc/ecs/ecs.config
 systemctl restart cloud-final.service
 systemctl restart ecs
 
