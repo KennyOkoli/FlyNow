@@ -66,7 +66,11 @@ data "aws_iam_policy_document" "github-policy-doc" {
         "ecs:UpdateService",
         "ecs:DescribeServices"     
       ]
-      resources = [var.frontend-ecs-arn, var.backend-ecs-arn, var.frontend-task-def-arn, var.backend-task-def-arn]
+      resources = [
+        var.frontend-ecs-arn, 
+        var.backend-ecs-arn, 
+        "${var.frontend-task-def-arn}:*", 
+        "${var.backend-task-def-arn}:*"]
     }
     statement {
       effect = "Allow"
@@ -78,8 +82,6 @@ data "aws_iam_policy_document" "github-policy-doc" {
     }
 }
 
-variable "task-role" {}
-variable "task-def-role" {}
 resource "aws_iam_role_policy" "github-role-attachment" {
    role = aws_iam_role.github-role.id
    policy = data.aws_iam_policy_document.github-policy-doc.json
