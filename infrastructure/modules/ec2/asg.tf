@@ -5,9 +5,9 @@ variable "vpc_id" {}
 variable "env" {}
 
 resource "aws_launch_template" "ec2-template" {
-    image_id = "ami-0016bff49059ce56b"
+    image_id = "ami-001af79feda3327c1"
     instance_type = "t3.micro"
-    vpc_security_group_ids = [aws_security_group.ec2-compute-sg.id]
+    vpc_security_group_ids = [aws_security_group.compute-sg.id]
     iam_instance_profile {
       arn = aws_iam_instance_profile.ec2-profile.arn 
     }
@@ -17,8 +17,8 @@ resource "aws_launch_template" "ec2-template" {
 resource "aws_autoscaling_group" "ec2-autoscale" {
     name = "ec2-autoscale"
     vpc_zone_identifier = var.vpc-prv-subnets
-    desired_capacity = 0
-    min_size = 0
+    desired_capacity = 2
+    min_size = 1
     max_size = 4
     health_check_type = "EC2"
     health_check_grace_period = 20
@@ -44,9 +44,14 @@ resource "aws_security_group" "ec2-compute-sg" {
     vpc_id = var.vpc_id
 }
 
+resource "aws_security_group" "compute-sg" {
+    name = "compute-sg-${var.env}"
+    vpc_id = var.vpc_id
+}
+
 resource "aws_security_group_rule" "ec2-rule-1" {
     type = "ingress"
-    security_group_id = aws_security_group.ec2-compute-sg.id
+    security_group_id = aws_security_group.compute-sg.id
     cidr_blocks = [var.public-cidr]
     protocol = "tcp"
     from_port = 0
@@ -55,7 +60,7 @@ resource "aws_security_group_rule" "ec2-rule-1" {
 
 resource "aws_security_group_rule" "ec2-rule-2" {
     type = "egress"
-    security_group_id = aws_security_group.ec2-compute-sg.id
+    security_group_id = aws_security_group.compute-sg.id
     cidr_blocks = [var.public-cidr]
     protocol = "tcp"
     from_port = 0
