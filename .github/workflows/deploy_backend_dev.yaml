@@ -84,8 +84,8 @@ jobs:
   #     id: update-task-def
   #     uses: aws-actions/amazon-ecs-render-task-definition@v1
   #     with:
-  #         task-definition-family: web-app
-  #         container-name: cloudsave-app
+  #         task-definition-family: ${{vars.TASK_FAMILY}}
+  #         container-name: ${{vars.IMAGE}}
   #         image: ${{steps.repo.outputs.repo_url}}
 
   #   - name: update-ecs
