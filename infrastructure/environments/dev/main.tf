@@ -24,6 +24,8 @@ module "github" {
     frontend-task-def-arn = module.ecs.f-end-task-def
     backend-task-def-arn = module.ecs.b-end-task-def
     env = var.env
+    task-def-role = module.ecs.task_def_role
+    task-role = module.ecs.task_role
 }
 
 module "ecs" {
