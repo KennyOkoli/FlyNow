@@ -66,11 +66,7 @@ data "aws_iam_policy_document" "github-policy-doc" {
         "ecs:UpdateService",
         "ecs:DescribeServices"     
       ]
-      resources = [
-        var.frontend-ecs-arn, 
-        var.backend-ecs-arn, 
-        "${var.frontend-task-def-arn}:*", 
-        "${var.backend-task-def-arn}:*"]
+      resources = ["*"]
     }
     statement {
       effect = "Allow"
