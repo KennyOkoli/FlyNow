@@ -25,7 +25,7 @@ resource "aws_ecs_task_definition" "frontend-task-def" {
     requires_compatibilities = ["EC2"]
     family = "frontend-web-${var.env}"
     execution_role_arn = aws_iam_role.task-def-role.arn
-    task_role_arn = aws_iam_role.task-role.arn
+    #task_role_arn = aws_iam_role.task-role.arn
 
     container_definitions = jsonencode([
         {

@@ -1,5 +1,5 @@
 resource "aws_iam_role" "task-role" {
-    name = "task-role"
+    name = "task-role-${var.env}"
     assume_role_policy = data.aws_iam_policy_document.task_def_trust.json
 }
 
