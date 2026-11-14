@@ -6,7 +6,7 @@ variable "env" {}
 
 resource "aws_launch_template" "ec2-template" {
     image_id = "ami-001af79feda3327c1"
-    instance_type = "t3.micro"
+    instance_type = "t3.small"
     vpc_security_group_ids = [aws_security_group.compute-sg.id]
     iam_instance_profile {
       arn = aws_iam_instance_profile.ec2-profile.arn 
@@ -17,8 +17,8 @@ resource "aws_launch_template" "ec2-template" {
 resource "aws_autoscaling_group" "ec2-autoscale" {
     name = "ec2-autoscale"
     vpc_zone_identifier = var.vpc-prv-subnets
-    desired_capacity = 2
-    min_size = 1
+    desired_capacity = 0
+    min_size = 0
     max_size = 4
     health_check_type = "EC2"
     health_check_grace_period = 20
