@@ -47,7 +47,7 @@ resource "aws_ecs_task_definition" "frontend-task-def" {
         logConfiguration = {
                 logDriver = "awslogs"
                 options = {
-                    awslogs-group = aws_cloudwatch_log_group.flynow-log-group
+                    awslogs-group = aws_cloudwatch_log_group.flynow-log-group.name
                     awslogs-region = var.region
                     awslogs-stream-prefix = "service"
                 }
@@ -138,7 +138,7 @@ resource "aws_ecs_task_definition" "backend-task-def" {
             logConfiguration = {
                 logDriver = "awslogs"
                 options = {
-                    awslogs-group = aws_cloudwatch_log_group.flynow-log-group
+                    awslogs-group = aws_cloudwatch_log_group.flynow-log-group.name
                     awslogs-region = var.region
                     awslogs-stream-prefix = "service"
                 }
