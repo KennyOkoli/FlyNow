@@ -53,6 +53,10 @@ data "aws_iam_policy_document" "role-policy" {
         "ecr:BatchGetImage",
         "ecr:GetDownloadUrlForLayer",
         "ecr:BatchCheckLayerAvailability",
+        "ecr:InitiateLaterUpload",
+        "ecr:CompleteLayerUpload",
+        "ecr:PutImage",
+        "ecr:UploadLayerPart",
         "logs:CreateLogStream",
         "logs:PutLogEvents"
         ]
@@ -65,3 +69,9 @@ data "aws_iam_policy_document" "role-policy" {
     }
     #
 }
+/*
+ecr:CompleteLayerUpload
+ecr:InitiateLayerUpload
+ecr:PutImage
+ecr:UploadLayerPart
+ */
