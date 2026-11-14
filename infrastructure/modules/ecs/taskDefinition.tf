@@ -44,6 +44,14 @@ resource "aws_ecs_task_definition" "frontend-task-def" {
                 value = var.backend-url
             }
             ]
+        logConfiguration = {
+                logDriver = "awslogs"
+                options = {
+                    awslogs-group = aws_cloudwatch_log_group.flynow-log-group
+                    awslogs-region = var.region
+                    awslogs-stream-prefix = "service"
+                }
+            }
         }
     ])
 }
@@ -76,7 +84,7 @@ resource "aws_ecs_task_definition" "backend-task-def" {
             retries = 3
             startPeriod = 60
         }
-        
+
         environment = [
             {   
                 name = "DB_NAME"
@@ -127,7 +135,18 @@ resource "aws_ecs_task_definition" "backend-task-def" {
                 value = local.secrets.sabre_client_secret
             }
             ]
+            logConfiguration = {
+                logDriver = "awslogs"
+                options = {
+                    awslogs-group = aws_cloudwatch_log_group.flynow-log-group
+                    awslogs-region = var.region
+                    awslogs-stream-prefix = "service"
+                }
+            }
         }
     ])
 }
 
+variable "region" {
+    default = "af-south-1"
+}
