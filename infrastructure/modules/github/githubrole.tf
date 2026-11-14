@@ -42,7 +42,7 @@ data "aws_iam_policy_document" "github-policy-doc" {
     statement {
       effect = "Allow"
       actions = [
-        "ecr:GetAuthorisationToken"
+        "ecr:GetAuthorizationToken"
       ]
       resources = ["*"] # Similar to ecr login
     }
