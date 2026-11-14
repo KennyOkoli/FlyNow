@@ -68,6 +68,15 @@ resource "aws_ecs_task_definition" "backend-task-def" {
             containerPort = 8000
             protocol = "tcp"
         }]
+
+        healthCheck = {
+            command = ["CMD_SHELL", "curl -f http://localhost:8000/api/health || exit 1"]
+            interval = 20
+            timeout = 3
+            retries = 3
+            startPeriod = 60
+        }
+        
         environment = [
             {   
                 name = "DB_NAME"

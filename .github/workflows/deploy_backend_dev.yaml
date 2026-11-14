@@ -75,22 +75,22 @@ jobs:
            url='${{env.REPO_URL}}/${{vars.REPO}}:${{github.sha}}'         
            echo "repo_url=$url" >> $GITHUB_OUTPUT
 
-  #   - name: build-tag-push
-  #     run: |
-  #          docker build -t "${{steps.repo.outputs.repo_url}}" .
-  #          docker push "${{steps.repo.outputs.repo_url}}"
+    - name: build-tag-push
+      run: |
+           docker build -t "${{steps.repo.outputs.repo_url}}" .
+           docker push "${{steps.repo.outputs.repo_url}}"
 
-  #   - name: revise-task-def
-  #     id: update-task-def
-  #     uses: aws-actions/amazon-ecs-render-task-definition@v1
-  #     with:
-  #         task-definition-family: ${{vars.TASK_FAMILY}}
-  #         container-name: ${{vars.IMAGE}}
-  #         image: ${{steps.repo.outputs.repo_url}}
+    - name: revise-task-def
+      id: update-task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+          task-definition-family: ${{vars.TASK_FAMILY}}
+          container-name: ${{vars.IMAGE}}
+          image: ${{steps.repo.outputs.repo_url}}
 
-  #   - name: update-ecs
-  #     uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-  #     with:
-  #          task-definition: ${{steps.update-task-def.outputs.task-definition}}
-  #          service: cloudsave-ecs-dev
-  #          cluster: cloudsave-cluster-dev
+    - name: update-ecs
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      with:
+           task-definition: ${{steps.update-task-def.outputs.task-definition}}
+           service: ${{vars.SERVICE}}
+           cluster: ${{vars.CLUSTER}}
