@@ -49,6 +49,7 @@ jobs:
 
   push_to_ecr:
     runs-on: ubuntu-latest
+    environment: dev-app
     needs: build_and_test
     steps:
     - uses: actions/checkout@v4
