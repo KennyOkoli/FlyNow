@@ -55,7 +55,8 @@ data "aws_iam_policy_document" "role-policy" {
         ]
         resources = [
             aws_ecr_repository.flynow-repo.arn,
-            aws_cloudwatch_log_group.flynow-log-group.arn
+            aws_cloudwatch_log_group.flynow-log-group.arn,
+            "${aws_cloudwatch_log_group.flynow-log-group.arn}:*"
             ]
     }
     statement {

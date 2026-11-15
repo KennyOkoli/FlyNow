@@ -2,7 +2,7 @@ resource "aws_ecs_service" "backend-service"{
     name = "backend-service-${var.env}"
     cluster = aws_ecs_cluster.flynow-cluster.id
     task_definition = aws_ecs_task_definition.backend-task-def.arn
-    desired_count = 2
+    desired_count = 0
     launch_type = "EC2"
 
     service_connect_configuration {
@@ -23,9 +23,13 @@ resource "aws_ecs_service" "backend-service"{
        security_groups = [aws_security_group.backend-sg.id]
     }
 
-    ordered_placement_strategy {
+    /*ordered_placement_strategy {
        type = "spread"
        field = "instanceId"
+    }*/
+
+    placement_constraints {
+      type = "distinctInstance"
     }
 
     lifecycle {
