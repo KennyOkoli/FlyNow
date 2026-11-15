@@ -7,4 +7,5 @@ COPY . .
 RUN uv sync --frozen --no-dev
 EXPOSE 8000
 # Health check for the load balancer / ECS: GET /api/health
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 CMD ["uv", "run", "--no-sync", "uvicorn", "server.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]
