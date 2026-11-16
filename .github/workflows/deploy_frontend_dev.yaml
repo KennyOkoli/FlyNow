@@ -37,7 +37,7 @@ jobs:
       environment: dev-frontend
       steps:
         - name: get-aws-credentials
-          uses: aws-actions:configure-aws-credentials@v4
+          uses: aws-actions/configure-aws-credentials@v4
           with:
              role-to-assume: ${{vars.AWS_ROLE}}
              aws-region: ${{vars.AWS_REGION}}
