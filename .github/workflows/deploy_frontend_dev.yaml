@@ -25,7 +25,7 @@ jobs:
         - name: build_image
           run: |
                docker build -t frontend .
-               docker run -d -p 8000:80 frontend
+               docker run -d -p 8000:80 -e ENDPOINT=http://localhost:3000 frontend
 
         - name: test_container
           run: |
