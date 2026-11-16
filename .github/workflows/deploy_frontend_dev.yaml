@@ -51,12 +51,14 @@ jobs:
           uses: aws-actions/amazon-ecr-login@v2
 
         - name: echo
-          run: echo ${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
+          id: tag
+          run: echo '${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}'
 
         - name: build and push with docker buildx
           uses: docker/build-push-action@v6
           with:
             context: .
             push: true
-            cache-from: type="registry" ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:buildcache
-            cache-to: 
+            tag: ${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
+            cache-from: type=registry,ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:buildcache
+            cache-to: type=registry,ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:buildcache,mode=max
