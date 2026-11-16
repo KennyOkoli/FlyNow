@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "frontend-task-def" {
     container_definitions = jsonencode([
         {
         name = "frontend-${var.env}"
-        image = "nginx:latest"
+        image = "nginx:latest" # A placeholder image. It will be updated by github actions
         cpu = 256
         memory = 512
         portMappings = [{
@@ -68,7 +68,7 @@ resource "aws_ecs_task_definition" "backend-task-def" {
     container_definitions = jsonencode([
         {
         name = "backend-${var.env}"
-        image = "nginx:latest"
+        image = "nginx:latest" # A placeholder image. It will be updated by github actions
         cpu = 256
         memory = 512
         portMappings = [{
