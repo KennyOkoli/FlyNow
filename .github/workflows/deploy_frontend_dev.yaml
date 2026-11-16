@@ -58,5 +58,5 @@ jobs:
           with:
             context: .
             push: true
-            cache-from: type="registry" ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
+            cache-from: type="registry" ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:buildcache
             cache-to: 
