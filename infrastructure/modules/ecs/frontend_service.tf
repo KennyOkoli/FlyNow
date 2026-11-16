@@ -36,6 +36,10 @@ resource "aws_ecs_service" "flynow-ecs-frontend"{
        type = "spread"
        field = "instanceId"
     }
+
+    placement_constraints {
+        type = "distinctInstance"
+    }
     
     lifecycle {
       ignore_changes = [task_definition]
@@ -66,9 +70,3 @@ resource "aws_security_group_rule" "task-rule-3" {
     from_port = 0
     to_port = 65535
 }
-/*
-resource "aws_network_acl_association" "task-subnet-nacl" {
-    count = 2
-    network_acl_id = var.nacl
-    subnet_id = var.private-subnets[count.index]
-}*/
