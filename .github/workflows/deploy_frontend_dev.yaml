@@ -9,8 +9,7 @@ on:
 
 defaults:
   run:
-    working-directory:
-      - application/web
+    working-directory: application/web
 
 permissions:
   id-token: write
