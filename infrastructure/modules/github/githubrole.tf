@@ -52,6 +52,7 @@ data "aws_iam_policy_document" "github-policy-doc" {
         "ecr:BatchCheckLayerAvailability",
         "ecr:CompleteLayerUpload",
         "ecr:InitiateLayerUpload",
+        "ecr:GetDownloadUrlForLayer",
         "ecr:PutImage",
         "ecr:UploadLayerPart",
         "ecr:BatchGetImage"
