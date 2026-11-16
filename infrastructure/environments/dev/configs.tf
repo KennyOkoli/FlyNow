@@ -34,7 +34,7 @@ variable "sabre-client-id" {
 }
 
 variable "sabre-base-url" {
-    default = "https://api.cert.platform.sabre.com/v2/auth/token"
+    default = "https://api.cert.platform.sabre.com"
 }
 
 variable "PCC" {
