@@ -29,7 +29,7 @@ jobs:
 
         - name: test_container
           run: |
-               sleep 10
+               sleep 5
                curl -f http://localhost:8000
 
     authenticate_push:
@@ -59,6 +59,6 @@ jobs:
           with:
             context: .
             push: true
-            tag: ${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
+            tags: ${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
             cache-from: type=registry,ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:buildcache
             cache-to: type=registry,ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:buildcache,mode=max
