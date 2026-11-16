@@ -57,8 +57,14 @@ jobs:
         - name: build and push with docker buildx
           uses: docker/build-push-action@v6
           with:
-            context: .
+            context: ./application/web
+            file: ./application/web/Dockerfile
             push: true
             tags: ${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
             cache-from: type=registry,ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:buildcache
             cache-to: type=registry,ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:buildcache,mode=max
+
+        # - name: Render task definition
+        #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+        #   with:
+        #     - task-definition-family
