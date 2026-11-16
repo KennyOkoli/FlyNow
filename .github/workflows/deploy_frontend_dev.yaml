@@ -37,6 +37,9 @@ jobs:
       runs-on: ubuntu-latest
       environment: dev-frontend
       steps:
+        - name: pull repo
+          uses: actions/checkout@v4
+
         - name: get-aws-credentials
           uses: aws-actions/configure-aws-credentials@v4
           with:
@@ -50,9 +53,10 @@ jobs:
         - name: echo
           run: echo ${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
 
-        # - name: build and push with docker buildx
-        #   uses: docker/build-push-action@v6
-        #   with:
-        #     context: .
-        #     push: true
-        #     cache-from: type="registry" ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
+        - name: build and push with docker buildx
+          uses: docker/build-push-action@v6
+          with:
+            context: .
+            push: true
+            cache-from: type="registry" ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
+            cache-to: 
