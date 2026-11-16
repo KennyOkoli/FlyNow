@@ -64,7 +64,17 @@ jobs:
             cache-from: type=registry,ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:buildcache
             cache-to: type=registry,ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:buildcache,mode=max
 
-        # - name: Render task definition
-        #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-        #   with:
-        #     - task-definition-family
+        - name: Render task definition
+          id: task-def
+          uses: aws-actions/amazon-ecs-render-task-definition@v1
+          with:
+             task-definition-family: ${{vars.TASK_FAMILY}}
+             container-name: ${{vars.CONTAINER_NAME}}
+             image: ${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
+
+        - name: Update ecs
+          uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+          with:
+             task-definition: ${{steps.task-def.outputs.task-definition}}
+             service: ${{vars.ECS-SERVICE}}
+             cluster: ${{vars.ECS-CLUSTER}}
