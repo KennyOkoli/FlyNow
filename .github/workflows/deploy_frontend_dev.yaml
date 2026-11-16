@@ -33,6 +33,7 @@ jobs:
                curl -f http://localhost:8000
 
     authenticate_push:
+      needs: test_image
       runs-on: ubuntu-latest
       environment: dev-frontend
       steps:
@@ -41,3 +42,17 @@ jobs:
           with:
              role-to-assume: ${{vars.AWS_ROLE}}
              aws-region: ${{vars.AWS_REGION}}
+        
+        - name: Login to ecr
+          id: registry_name
+          uses: aws-actions/amazon-ecr-login@v2
+
+        - name: echo
+          run: echo ${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
+
+        # - name: build and push with docker buildx
+        #   uses: docker/build-push-action@v6
+        #   with:
+        #     context: .
+        #     push: true
+        #     cache-from: type="registry" ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
