@@ -129,6 +129,8 @@ class SearchMeta(CamelModel):
     count: int
     provider: Literal["sabre", "mock"]
     fetched_at: UtcDateTime
+    # True when this is a stored copy of an identical search made within SEARCH_TTL_MINUTES.
+    cached: bool = False
 
 
 class SearchResponse(CamelModel):
