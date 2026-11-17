@@ -70,8 +70,8 @@ jobs:
     - name: create-image-url
       id: repo
       run: |
-           url='${{steps.login-ecr.ouputs.registry}}/${{vars.REPO}}:${{github.sha}}'
-           registry='${{steps.login-ecr.ouputs.registry}}/${{vars.REPO}}'    
+           url='${{steps.login-ecr.outputs.registry}}/${{vars.REPO}}:${{github.sha}}'
+           registry='${{steps.login-ecr.outputs.registry}}/${{vars.REPO}}'    
            echo "repo_url=$url" >> $GITHUB_OUTPUT
            echo "reg=$registry" >> $GITHUB_OUTPUT
 
@@ -82,8 +82,8 @@ jobs:
         file: ./application/server/Dockerfile
         push: true
         tags: ${{steps.repo.outputs.repo_url}}
-        cache-from: type=registry,ref=${{steps.repo.outputs.reg}}:buildcache
-        cache-to: type=registry,ref=${{steps.repo.outputs.reg}}:buildcache,mode=max
+        cache-from: type=registry,ref=${{steps.repo.outputs.reg}}:buildcacheServer
+        cache-to: type=registry,ref=${{steps.repo.outputs.reg}}:buildcacheServer,mode=max
 
     - name: revise-task-def
       id: update-task-def
