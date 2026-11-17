@@ -19,6 +19,7 @@ import {
   applyFilters,
   buildFilterOptions,
   emptyFilters,
+  shuffleItineraries,
   sortItineraries,
   type Filters,
   type SortKey,
@@ -35,7 +36,8 @@ const response = ref<SearchResponse | null>(null)
 const loading = ref(false)
 const error = ref<ApiError | null>(null)
 const filters = ref<Filters>(emptyFilters())
-const sort = ref<SortKey>('cheapest')
+// No sort until the user picks one: results start in a shuffled order.
+const sort = ref<SortKey | null>(null)
 const drawerOpen = ref(false)
 
 async function run(force = false) {
@@ -59,9 +61,13 @@ watch(() => route.fullPath, () => run(), { immediate: true })
 const options = computed(() =>
   response.value ? buildFilterOptions(response.value.itineraries, response.value.airlines, response.value.currency) : null,
 )
-const visible = computed(() =>
-  response.value ? sortItineraries(applyFilters(response.value.itineraries, filters.value), sort.value) : [],
+const shuffled = computed(() =>
+  response.value ? shuffleItineraries(response.value.itineraries, response.value.searchId) : [],
 )
+const visible = computed(() => {
+  const list = applyFilters(shuffled.value, filters.value)
+  return sort.value ? sortItineraries(list, sort.value) : list
+})
 const filterCount = computed(() => activeFilterCount(filters.value))
 
 function cityOf(code: string): string | undefined {
@@ -158,7 +164,7 @@ function editSearch() {
                     :aria-selected="sort === s.id"
                     class="h-8 rounded-[7px] px-3 text-sm font-semibold transition-colors"
                     :class="sort === s.id ? 'bg-cobalt text-white' : 'text-ink-2 hover:text-ink'"
-                    @click="sort = s.id"
+                    @click="sort = sort === s.id ? null : s.id"
                   >
                     {{ s.label }}
                   </button>

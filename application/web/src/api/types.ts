@@ -101,6 +101,8 @@ export interface SearchMeta {
   count: number
   provider: Provider
   fetchedAt: string
+  /** True when the server answered from a stored copy of an identical recent search. */
+  cached?: boolean
 }
 
 export interface SearchResponse {

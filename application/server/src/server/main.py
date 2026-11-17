@@ -10,12 +10,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from server.cache import SearchCache
 from server.config import get_settings
 from server.db import create_tables, make_engine, make_sessionmaker
 from server.errors import ApiError
 from server.providers.mock import MockProvider
 from server.providers.sabre import SabreProvider
+from server.results import ResultStore
 from server.routers import airports, flights
 from server.schemas import HealthResponse
 
@@ -29,11 +29,11 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     client = httpx.AsyncClient(timeout=httpx.Timeout(60.0, connect=10.0))
     app.state.http = client
-    app.state.cache = SearchCache(timedelta(minutes=settings.search_ttl_minutes))
     app.state.provider = MockProvider() if settings.mock_enabled else SabreProvider(client, settings)
     engine = make_engine(settings.resolved_database_url)
     await create_tables(engine)
     app.state.db = make_sessionmaker(engine)
+    app.state.results = ResultStore(app.state.db, timedelta(minutes=settings.search_ttl_minutes))
     logger.info("Flight provider: %s", app.state.provider.name)
     yield
     await client.aclose()

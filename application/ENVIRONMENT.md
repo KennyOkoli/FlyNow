@@ -55,7 +55,10 @@ if there is a load balancer in front, give it an idle timeout of at least 90s to
 
 ### Database
 
-The backend saves every search to one table, `searches` (created automatically on start-up).
+The backend uses two tables, both created automatically on start-up:
+
+- `searches`: one row per search sent to Sabre (route, dates, passengers, result count).
+- `search_results`: the full results of each search for `SEARCH_TTL_MINUTES`. Every backend task reads from it, so the detail page works whichever task answers, and an identical search inside that window is answered from here without calling Sabre. Rows are deleted a day after they expire.
 It accepts the connection in either of two forms:
 
 **A. The parts** (what `infrastructure/modules/ecs/taskDefinition.tf` already passes):
@@ -83,7 +86,7 @@ but is lost when a container restarts.
 | Variable | Default | Notes |
 |---|---|---|
 | `CORS_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | Comma-separated. Only matters if the frontend is served from a different origin than `/api` (not the case behind the nginx proxy). |
-| `SEARCH_TTL_MINUTES` | `30` | How long search results stay cached in memory for the detail page. With more than one backend task, a detail request can land on a task that never saw the search; run one task or use sticky sessions until the cache moves to a shared store. |
+| `SEARCH_TTL_MINUTES` | `30` | How long a search's results are kept in `search_results`: the detail page works for this long, and an identical search in this window is reused instead of calling Sabre. After it, the detail page shows "These fares have expired". |
 
 ## API endpoints (backend)
 
@@ -93,7 +96,7 @@ All under `/api`. Full request/response shapes are in [API.md](./API.md).
 |---|---|---|
 | GET | `/api/health` | Liveness + which provider is active. Use for target-group / ECS health checks. |
 | GET | `/api/airports?q=lag` | Airport autocomplete. |
-| POST | `/api/flights/search` | Search flights (calls Sabre). Saves a row in `searches`. |
+| POST | `/api/flights/search` | Search flights. Reuses an identical search from the last `SEARCH_TTL_MINUTES` (`meta.cached: true`), otherwise calls Sabre, drops offers past their last ticketing date, and saves to `searches` and `search_results`. |
 | GET | `/api/flights/{searchId}/itineraries/{itineraryId}` | One itinerary from a cached search. |
 
 ## Running it locally

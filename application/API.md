@@ -52,7 +52,7 @@ Response `200`:
   "itineraries": [Itinerary],
   "airlines": { "BA": "British Airways" },
   "airports": { "LOS": { "city": "Lagos", "name": "Murtala Muhammed International Airport", "country": "Nigeria" } },
-  "meta": { "count": 23, "provider": "sabre" | "mock", "fetchedAt": "2026-11-08T12:00:00Z" }
+  "meta": { "count": 23, "provider": "sabre" | "mock", "fetchedAt": "2026-11-08T12:00:00Z", "cached": false }
 }
 ```
 
