@@ -20,7 +20,7 @@ resource "aws_ecs_service" "flynow-ecs-frontend"{
 
     service_connect_configuration {
        enabled = true
-       namespace = aws_service_discovery_http_namespace.flynow-cloudmap.arn
+       namespace = aws_service_discovery_http_namespace.flynow-cloudmap-fn.arn
     }
 
     load_balancer {

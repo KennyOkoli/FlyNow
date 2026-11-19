@@ -47,7 +47,7 @@ resource "aws_db_instance" "flynow_db"{
     password = local.db_credentials.password
     multi_az = false
     skip_final_snapshot = true
-    db_subnet_group_name = aws_db_subnet_group.db_subnet_group.name
+    db_subnet_group_name = aws_db_subnet_group.db_subnet_group_fn.name
     vpc_security_group_ids = [aws_security_group.db_sg.id]
     parameter_group_name = aws_db_parameter_group.db_parameter.name
 }
@@ -64,6 +64,12 @@ resource "aws_db_parameter_group" "db_parameter" {
 
 resource "aws_db_subnet_group" "db_subnet_group" {
     name = "db_subnet_group"
+    subnet_ids = aws_subnet.db_subnet[*].id
+}
+
+
+resource "aws_db_subnet_group" "db_subnet_group_fn" {
+    name = "db_subnet_group_${var.env}"
     subnet_ids = aws_subnet.db_subnet[*].id
 }
 
