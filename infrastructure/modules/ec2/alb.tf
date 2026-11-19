@@ -53,7 +53,7 @@ resource "aws_alb" "flynow-alb-new" {
 }
 
 resource "aws_alb_listener" "flynow-alb-listener" {
-    load_balancer_arn = aws_alb.flynow-alb.id
+    load_balancer_arn = aws_alb.flynow-alb-new.id
     protocol = "HTTP"
     port = 80
     default_action {
