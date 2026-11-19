@@ -1,74 +1,64 @@
-# Confirm the container ports
-# Update ECS lifecycle
-variable "private-subnets" {}
-variable "nacl" {}
-variable "db-sg" {}
-variable "public" {}
-variable "s3" {}
-variable "secrets" {}
-variable "vpc" {}
-variable "target-arn" {}
-variable "env" {}
-
-resource "aws_ecs_service" "flynow-ecs-frontend"{
-    name = "flynow-web-${var.env}"
-    cluster = aws_ecs_cluster.cloudsave-cluster.id
-    task_definition = aws_ecs_task_definition.cloudsave-task-def.arn
+resource "aws_ecs_service" "backend-service"{
+    name = "backend-service-${var.env}"
+    cluster = aws_ecs_cluster.flynow-cluster.id
+    task_definition = aws_ecs_task_definition.backend-task-def.arn
     desired_count = 2
     launch_type = "EC2"
+    deployment_minimum_healthy_percent = 50
+    deployment_maximum_percent = 100
 
     service_connect_configuration {
+
        enabled = true
        service {
          port_name = "http"
-         discovery_name = "backend"
+         discovery_name = "backend-tasks-${var.env}"
          client_alias {
-           dns_name = "backend"
-           port = 3000
+           dns_name = "backend-${var.env}"
+           port = 8000
          }
        }
     }
     
     network_configuration {
        subnets = var.private-subnets
-       security_groups = [aws_security_group.task-sg.id]
+       security_groups = [aws_security_group.backend-sg.id]
     }
-    ordered_placement_strategy {
+
+    /*ordered_placement_strategy {
        type = "spread"
        field = "instanceId"
+    }*/
+
+    placement_constraints {
+      type = "distinctInstance"
     }
+
     lifecycle {
       ignore_changes = [task_definition]
     }
 }
 
-resource "aws_security_group" "task-sg-frontend" {
-    name = "task-sg-frontend-${var.env}"
+resource "aws_security_group" "backend-sg" {
+    name = "backend-sg-${var.env}"
     vpc_id = var.vpc
 }
 
-variable "alb_sg" {}
-
-resource "aws_security_group_rule" "task-rule-1" {
+resource "aws_security_group_rule" "backend-sg-rule-1" {
     type = "ingress"
-    security_group_id = aws_security_group.task-sg-frontend.id
-    source_security_group_id = var.alb_sg
+    security_group_id = aws_security_group.backend-sg.id
+    source_security_group_id = aws_security_group.task-sg-frontend.id
     protocol = "tcp"
-    from_port = 4000
-    to_port = 4000
+    from_port = 8000
+    to_port = 8000
 }
 
-resource "aws_security_group_rule" "task-rule-3" {
+resource "aws_security_group_rule" "backend-sg-rule-2" {
     type = "egress"
-    security_group_id = aws_security_group.task-sg-frontend.id
+    security_group_id = aws_security_group.backend-sg.id
     cidr_blocks = [var.public]
     protocol = "tcp"
     from_port = 0
     to_port = 65535
 }
 
-resource "aws_network_acl_association" "task-subnet-nacl" {
-    count = 2
-    network_acl_id = var.nacl
-    subnet_id = var.private-subnets[count.index]
-}

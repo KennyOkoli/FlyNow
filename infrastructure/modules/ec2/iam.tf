@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "ec2-trust" {
 }
 
 resource "aws_iam_role" "ec2-role" {
-    name = "ec2-role"
+    name = "ec2-role-${var.env}"
     assume_role_policy = data.aws_iam_policy_document.ec2-trust.json
 }
 
@@ -25,6 +25,6 @@ resource "aws_iam_role_policy_attachment" "ec2-role-policy-ssm" {
 }
 
 resource "aws_iam_instance_profile" "ec2-profile" {
-    name = "ec2-profile"
+    name = "ec2-profile-${var.env}"
     role = aws_iam_role.ec2-role.name
 }

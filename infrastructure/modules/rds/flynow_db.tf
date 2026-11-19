@@ -48,7 +48,7 @@ resource "aws_db_instance" "flynow_db"{
     multi_az = false
     skip_final_snapshot = true
     db_subnet_group_name = aws_db_subnet_group.db_subnet_group.name
-    vpc_security_group_ids = [aws_security_group.mysql_db_sg.id]
+    vpc_security_group_ids = [aws_security_group.db_sg.id]
     parameter_group_name = aws_db_parameter_group.db_parameter.name
 }
 
@@ -97,7 +97,7 @@ variable "az" {}
 resource "aws_subnet" "db_subnet" {
     count = 2
     vpc_id = var.vpc-id
-    cidr_block = "172.0.${count.index + 200}.0/24" # Change cidr block
+    cidr_block = "32.0.${count.index + 200}.0/24" # Change cidr block
     availability_zone = var.az[count.index]
     tags={
         name = var.db_subnet_tags[count.index]
@@ -141,7 +141,7 @@ resource "aws_route_table_association" "db_subnet_to_route" {
 }
 
 variable "private_subnets" {}
-
+/*
 resource "aws_instance" "db_ec2_jumphost" {
     ami = "ami-0527144c5a042f57d"
     instance_type = "t3.micro"
@@ -207,4 +207,4 @@ resource "aws_iam_role_policy_attachment" "ec2_role_policy" {
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
     name = "ec2_instance_profile"
     role = aws_iam_role.ec2_role.name   
-}
+}*/

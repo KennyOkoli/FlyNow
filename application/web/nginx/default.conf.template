@@ -1,0 +1,34 @@
+# The nginx image fills in ${ENDPOINT} from the container's environment at start-up
+# (any *.template in /etc/nginx/templates is run through envsubst into /etc/nginx/conf.d).
+# ENDPOINT = where the backend answers, with no trailing slash, e.g. http://backend:8000
+
+server {
+    listen 80;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # The Vue app calls /api/... on its own origin; forward those to the backend, path unchanged.
+    location /api/ {
+        proxy_pass ${ENDPOINT};
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        # A live Sabre search can take up to a minute.
+        proxy_read_timeout 90s;
+    }
+
+    # Built files have hashed names, so they can be cached for a year.
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Single-page app: unknown paths load index.html and the router takes over.
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

@@ -3,31 +3,88 @@
 variable "db_port" {
     default = "3306"
 }
-variable "db_host" {
-    default = "mysql"
-}
+variable "db_host" {}
 variable "db_name" {}
 variable "db_username" {}
 variable "db_password" {}
-variable "s3_bucket" {}
-variable "env" {}
+variable "secret-manager" {}
 
-resource "aws_ecs_task_definition" "cloudsave-task-def" {
+variable "backend-url" {
+    default = "http://backend-dev:8000"
+}
+
+data "aws_secretsmanager_secret_version" "sabre-secrets" {
+    secret_id = var.secret-manager
+}
+
+locals {
+    secrets = jsondecode(data.aws_secretsmanager_secret_version.sabre-secrets.secret_string)
+}
+resource "aws_ecs_task_definition" "frontend-task-def" {
     network_mode = "awsvpc"
     requires_compatibilities = ["EC2"]
-    family = "web-app-${var.env}"
+    family = "frontend-web-${var.env}"
+    execution_role_arn = aws_iam_role.task-def-role.arn
+    #task_role_arn = aws_iam_role.task-role.arn
+
+    container_definitions = jsonencode([
+        {
+        name = "frontend-${var.env}"
+        image = "nginx:latest" # A placeholder image. It will be updated by github actions
+        cpu = 256
+        memory = 512
+        portMappings = [{
+            name = "http"
+            containerPort = 80
+            protocol = "tcp"
+        }]
+        environment = [
+            {
+                name = "ENDPOINT"
+                value = var.backend-url
+            }
+            ]
+        logConfiguration = {
+                logDriver = "awslogs"
+                options = {
+                    awslogs-group = aws_cloudwatch_log_group.flynow-log-group.name
+                    awslogs-region = var.region
+                    awslogs-stream-prefix = "service"
+                }
+            }
+        }
+    ])
+}
+
+
+
+resource "aws_ecs_task_definition" "backend-task-def" {
+    network_mode = "awsvpc"
+    requires_compatibilities = ["EC2"]
+    family = "backend-web-${var.env}"
     execution_role_arn = aws_iam_role.task-def-role.arn
     task_role_arn = aws_iam_role.task-role.arn
 
     container_definitions = jsonencode([
         {
-        name = "flynow-web-${var.env}"
-        image = "nginx:latest"
+        name = "backend-${var.env}"
+        image = "nginx:latest" # A placeholder image. It will be updated by github actions
         cpu = 256
         memory = 512
         portMappings = [{
-            containerPort = 4000
+            name = "http"
+            containerPort = 8000
+            protocol = "tcp"
         }]
+
+        healthCheck = {
+            command = ["CMD-SHELL", "curl -f http://localhost:8000/api/health || exit 1"]
+            interval = 20
+            timeout = 3
+            retries = 3
+            startPeriod = 60
+        }
+
         environment = [
             {   
                 name = "DB_NAME"
@@ -49,11 +106,47 @@ resource "aws_ecs_task_definition" "cloudsave-task-def" {
                 name = "DB_HOST"
                 value = var.db_host
             },
-            {   name = "S3_BUCKET"
-                value = var.s3_bucket
+            {
+                name = "SABRE_USER_ID"
+                value = var.sabre-user-id
+            },
+            {
+                name = "SABRE_CLIENT_ID"
+                value = var.sabre-client-id
+            },
+            {
+                name = "SABRE_BASE_URL"
+                value = var.sabre-base-url
+            },
+            {
+                name = "SABRE_PCC"
+                value = var.PCC
+            },
+            {
+                name = "USE_MOCK"
+                value = var.use_mock
+            },
+            {
+                name = "SABRE_PASSWORD"
+                value = local.secrets.sabre_password
+            },
+            {
+                name = "SABRE_CLIENT_SECRET"
+                value = local.secrets.sabre_client_secret
             }
             ]
+            logConfiguration = {
+                logDriver = "awslogs"
+                options = {
+                    awslogs-group = aws_cloudwatch_log_group.flynow-log-group.name
+                    awslogs-region = var.region
+                    awslogs-stream-prefix = "service"
+                }
+            }
         }
     ])
 }
 
+variable "region" {
+    default = "af-south-1"
+}

@@ -11,7 +11,7 @@ terraform {
 variable env{}
 
 resource "aws_secretsmanager_secret" "flynow-db-secrets" {
-    name = "flynow-db-secrets${var.env}"
+    name = "flynow-secrets${var.env}"
 }
 
 /*resource "aws_secretsmanager_secret_version" "db-secrets" {

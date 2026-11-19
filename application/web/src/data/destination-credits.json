@@ -1,0 +1,52 @@
+{
+  "LHR": {
+    "artist": "Diliff",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tower_Bridge_London_Dusk_Feb_2006.jpg"
+  },
+  "DXB": {
+    "artist": "Norlando Pobre",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Dubai_Marina_Skyline.jpg"
+  },
+  "JFK": {
+    "artist": "Christian David",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Brooklyn_Bridge_and_the_Lower_Manhattan_skyline_from_Pebble_Beach,_New_York.jpg"
+  },
+  "ACC": {
+    "artist": "Matti Blume",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Independence_Square,_Korle-Klottey_(IMG_20230201_124359_1).jpg"
+  },
+  "JNB": {
+    "artist": "Frankbel",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Johannesburg-city-skyline-night.jpg"
+  },
+  "CDG": {
+    "artist": "Getfunky Paris",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Eiffel_Tower_and_Pont_Alexandre_III_at_night.jpg"
+  },
+  "YYZ": {
+    "artist": "Martin St-Amant (S23678)",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:122_-_Toronto_-_Septembre_2009.jpg"
+  },
+  "IST": {
+    "artist": "Till Niermann",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:New_Mosque,_Istanbul,_from_Bosphorus.jpg"
+  },
+  "NBO": {
+    "artist": "Timothy A. Gonsalves",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Buffalo_Nairobi_Skyline_Savannah_Kenya_May19_R1600769.jpg"
+  },
+  "CPT": {
+    "artist": "Dietmar Rabich",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Cape_Town_(ZA),_Table_Mountain_--_2024_--_3437.jpg"
+  }
+}

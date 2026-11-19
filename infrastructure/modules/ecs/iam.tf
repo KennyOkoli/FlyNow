@@ -1,5 +1,5 @@
 resource "aws_iam_role" "task-role" {
-    name = "task-role"
+    name = "task-role-${var.env}"
     assume_role_policy = data.aws_iam_policy_document.task_def_trust.json
 }
 
@@ -13,19 +13,13 @@ data "aws_iam_policy_document" "task-actions" {
     statement {
        effect = "Allow"
        actions = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:ListBucket",
-          "s3:DeleteObject",
           "secretsmanager:GetSecretValue"
        ]
        resources = [
-          var.s3,
           var.secrets
        ]
     }
 }
-
 
 data "aws_iam_policy_document" "task_def_trust" {
     statement {
@@ -39,7 +33,7 @@ data "aws_iam_policy_document" "task_def_trust" {
 }
 
 resource "aws_iam_role" "task-def-role" {
-    name = "task-def-role"
+    name = "task-def-role-${var.env}"
     assume_role_policy = data.aws_iam_policy_document.task_def_trust.json
 }
 
@@ -59,7 +53,11 @@ data "aws_iam_policy_document" "role-policy" {
         "logs:CreateLogStream",
         "logs:PutLogEvents"
         ]
-        resources = [aws_ecr_repository.cloudsave-repo.arn]
+        resources = [
+            aws_ecr_repository.flynow-repo.arn,
+            aws_cloudwatch_log_group.flynow-log-group.arn,
+            "${aws_cloudwatch_log_group.flynow-log-group.arn}:*"
+            ]
     }
     statement {
         effect = "Allow"
@@ -68,3 +66,9 @@ data "aws_iam_policy_document" "role-policy" {
     }
     #
 }
+/*
+ecr:CompleteLayerUpload
+ecr:InitiateLayerUpload
+ecr:PutImage
+ecr:UploadLayerPart
+ */

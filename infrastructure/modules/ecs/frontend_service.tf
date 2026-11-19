@@ -1,39 +1,51 @@
 # Confirm the container ports
 # Update ECS lifecycle
+
 variable "private-subnets" {}
 variable "nacl" {}
 variable "db-sg" {}
 variable "public" {}
-variable "s3" {}
 variable "secrets" {}
 variable "vpc" {}
 variable "target-arn" {}
-variable "env" {}
 
 resource "aws_ecs_service" "flynow-ecs-frontend"{
     name = "flynow-web-${var.env}"
-    cluster = aws_ecs_cluster.cloudsave-cluster.id
-    task_definition = aws_ecs_task_definition.cloudsave-task-def.arn
+    cluster = aws_ecs_cluster.flynow-cluster.id
+    task_definition = aws_ecs_task_definition.frontend-task-def.arn
     desired_count = 2
     launch_type = "EC2"
+    deployment_minimum_healthy_percent = 50
+    deployment_maximum_percent = 100
+
+    service_connect_configuration {
+       enabled = true
+       namespace = aws_service_discovery_http_namespace.flynow-cloudmap.arn
+    }
 
     load_balancer {
        target_group_arn = var.target-arn
-       container_name = "web-app-${var.env}"
-       container_port = 4000
+       container_name = "frontend-${var.env}"
+       container_port = 80
     }
 
     network_configuration {
        subnets = var.private-subnets
-       security_groups = [aws_security_group.task-sg.id]
+       security_groups = [aws_security_group.task-sg-frontend.id]
     }
-    ordered_placement_strategy {
+
+    ordered_placement_strategy { # Checkout more on ordered placement strategies using az
        type = "spread"
        field = "instanceId"
     }
-    /*lifecycle {
+
+    placement_constraints {
+        type = "distinctInstance"
+    }
+    
+    lifecycle {
       ignore_changes = [task_definition]
-    }*/
+    }
 }
 
 resource "aws_security_group" "task-sg-frontend" {
@@ -48,8 +60,8 @@ resource "aws_security_group_rule" "task-rule-1" {
     security_group_id = aws_security_group.task-sg-frontend.id
     source_security_group_id = var.alb_sg
     protocol = "tcp"
-    from_port = 4000
-    to_port = 4000
+    from_port = 80
+    to_port = 80
 }
 
 resource "aws_security_group_rule" "task-rule-3" {
@@ -59,10 +71,4 @@ resource "aws_security_group_rule" "task-rule-3" {
     protocol = "tcp"
     from_port = 0
     to_port = 65535
-}
-
-resource "aws_network_acl_association" "task-subnet-nacl" {
-    count = 2
-    network_acl_id = var.nacl
-    subnet_id = var.private-subnets[count.index]
 }

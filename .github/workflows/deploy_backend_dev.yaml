@@ -1,0 +1,101 @@
+name: Deploy backend image
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - "application/server/**"
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+   working-directory: application/server
+
+jobs:
+  build_and_test:
+    environment: dev-app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull branch
+        uses: actions/checkout@v4
+
+      - name: build-image
+        run: docker build -t backend .
+
+      - name: build-test
+        run: |
+             docker run -d --name flynow-debug -p 8080:8000 \
+             -e SABRE_CLIENT_SECRET="${{secrets.SABRE_CLIENT_SECRET}}" \
+             -e SABRE_CLIENT_ID=${{vars.SABRE_CLIENT_ID}} \
+             -e SABRE_PCC=${{vars.SABRE_PCC}} \
+             -e SABRE_BASE_URL=${{vars.SABRE_BASE_URL}} \
+             -e USE_MOCK=${{vars.USE_MOCK}} \
+             -e SABRE_BASE_URL=${{vars.SABRE_BASE_URL}} \
+             -e SABRE_PASSWORD=${{secrets.SABRE_PASSWORD}} \
+             -e DB_PASSWORD=${{secrets.DB_PASSWORD}} \
+             -e DB_USERNAME=${{vars.DB_USERNAME}} \
+             -e DB_NAME=${{vars.DB_NAME}} \
+             -e DB_PORT=${{vars.DB_PORT}} \
+             -e DB_HOST=${{vars.DB_HOST}} \
+             backend
+
+             sleep 3
+             docker ps -a
+             docker logs flynow-debug
+
+
+  push_to_ecr:
+    runs-on: ubuntu-latest
+    environment: dev-app
+    needs: build_and_test
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: get identity
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+         role-to-assume: ${{vars.ROLE}}
+         aws-region: ${{vars.AWS_REGION}}
+    
+    - name: test_credentials
+      run: aws sts get-caller-identity
+
+    - name: login_ecr_service
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+    
+    - name: create-image-url
+      id: repo
+      run: |
+           url='${{steps.login-ecr.outputs.registry}}/${{vars.REPO}}:${{github.sha}}'
+           registry='${{steps.login-ecr.outputs.registry}}/${{vars.REPO}}'    
+           echo "repo_url=$url" >> $GITHUB_OUTPUT
+           echo "reg=$registry" >> $GITHUB_OUTPUT
+
+    - name: build and push with docker buildx
+      uses: docker/build-push-action@v6
+      with:
+        context: ./application/server
+        file: ./application/server/Dockerfile
+        push: true
+        tags: ${{steps.repo.outputs.repo_url}}
+        cache-from: type=registry,ref=${{steps.repo.outputs.reg}}:buildcacheServer
+        cache-to: type=registry,ref=${{steps.repo.outputs.reg}}:buildcacheServer,mode=max
+
+    - name: revise-task-def
+      id: update-task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+          task-definition-family: ${{vars.TASK_FAMILY}}
+          container-name: ${{vars.CONTAINER}}
+          image: ${{steps.repo.outputs.repo_url}}
+
+    - name: update-ecs
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      with:
+           task-definition: ${{steps.update-task-def.outputs.task-definition}}
+           service: ${{vars.SERVICE}}
+           cluster: ${{vars.CLUSTER}}

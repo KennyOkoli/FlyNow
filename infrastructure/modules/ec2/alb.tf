@@ -2,7 +2,7 @@ variable "public-subnet" {}
 variable "ecs-sg-var" {}
 
 
-resource "aws_alb_target_group" "cloudsave-target-group" {
+/*resource "aws_alb_target_group" "flynow-target-group" {
     vpc_id = var.vpc_id
     target_type = "ip"
     protocol = "HTTP"
@@ -11,31 +11,56 @@ resource "aws_alb_target_group" "cloudsave-target-group" {
     health_check {
     protocol = "HTTP"
     port = 4000
-    path = "/" # look up on this
+    path = "/"
+    interval = 10
+    timeout = 5
+    healthy_threshold = 3
+    unhealthy_threshold = 2
+    }
+}*/
+
+resource "aws_alb_target_group" "flynow-alb-target-group" {
+    vpc_id = var.vpc_id
+    target_type = "ip"
+    protocol = "HTTP"
+    port = 80
+    
+    health_check {
+    protocol = "HTTP"
+    port = 80
+    path = "/"
     interval = 10
     timeout = 5
     healthy_threshold = 3
     unhealthy_threshold = 2
     }
 }
+/*
+resource "aws_alb" "flynow-alb" {
+    name = "flynow-alb"
+    security_groups = [aws_security_group.alb-sg.id]
+    subnets = var.public-subnet
+    internal = false
+    load_balancer_type = "application"
+}*/
 
-resource "aws_alb" "cloudsave-alb" {
-    name = "cloudsave-alb"
+resource "aws_alb" "flynow-alb-new" {
+    name = "flynow-alb-${var.env}"
     security_groups = [aws_security_group.alb-sg.id]
     subnets = var.public-subnet
     internal = false
     load_balancer_type = "application"
 }
 
-resource "aws_alb_listener" "cloudsave-alb-listener" {
-    load_balancer_arn = aws_alb.cloudsave-alb.id
+resource "aws_alb_listener" "flynow-alb-listener" {
+    load_balancer_arn = aws_alb.flynow-alb-new.id
     protocol = "HTTP"
     port = 80
     default_action {
       type = "forward"
       forward {
         target_group {
-          arn = aws_alb_target_group.cloudsave-target-group.arn
+          arn = aws_alb_target_group.flynow-alb-target-group.arn
         }
       }
     }
@@ -60,6 +85,6 @@ resource "aws_security_group_rule" "alb-rule-4" {
     security_group_id = aws_security_group.alb-sg.id
     source_security_group_id = var.ecs-sg-var
     protocol = "tcp"
-    from_port = 4000
-    to_port = 4000
+    from_port = 0
+    to_port = 65535
 }
