@@ -44,3 +44,7 @@ variable "PCC" {
 variable "use_mock" {
     default = "false"
 }
+
+variable "backend-url" {
+    default = "http://backend-prod:8000"
+}
