@@ -35,14 +35,14 @@ resource "aws_alb_target_group" "flynow-alb-target-group" {
     unhealthy_threshold = 2
     }
 }
-
+/*
 resource "aws_alb" "flynow-alb" {
     name = "flynow-alb"
     security_groups = [aws_security_group.alb-sg.id]
     subnets = var.public-subnet
     internal = false
     load_balancer_type = "application"
-}
+}*/
 
 resource "aws_alb" "flynow-alb-new" {
     name = "flynow-alb-${var.env}"
