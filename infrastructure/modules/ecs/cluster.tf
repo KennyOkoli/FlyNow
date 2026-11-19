@@ -16,6 +16,6 @@ resource "aws_ecs_cluster" "flynow-cluster" {
         value = "enhanced"
     }
     service_connect_defaults {
-        namespace = aws_service_discovery_http_namespace.flynow-cloudmap.arn
+        namespace = aws_service_discovery_http_namespace.flynow-cloudmap-fn.arn
     }
 }
