@@ -13,7 +13,7 @@ resource "aws_launch_template" "ec2-template" {
     }
     user_data = base64encode(templatefile("${path.module}/user_data.sh", {environment = var.env}))
 }
-
+/*
 resource "aws_autoscaling_group" "ec2-autoscale" {
     name = "ec2-autoscale"
     vpc_zone_identifier = var.vpc-prv-subnets
@@ -37,7 +37,7 @@ resource "aws_autoscaling_group" "ec2-autoscale" {
       }
       triggers = ["launch_template"]
     }
-}
+}*/
 
 resource "aws_autoscaling_group" "ec2-autoscale-fn" {
     name = "ec2-autoscale-${var.env}"
