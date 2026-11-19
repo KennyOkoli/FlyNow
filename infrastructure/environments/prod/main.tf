@@ -49,6 +49,7 @@ module "ecs" {
     PCC = var.PCC
     secret-manager = module.secrets.secret-id
     db_host = module.rds.db_endpoint
+    backend-url = var.backend-url
 }
 
 module "ec2" {

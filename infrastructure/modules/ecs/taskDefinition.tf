@@ -9,9 +9,7 @@ variable "db_username" {}
 variable "db_password" {}
 variable "secret-manager" {}
 
-variable "backend-url" {
-    default = "http://backend-dev:8000"
-}
+variable "backend-url" {}
 
 data "aws_secretsmanager_secret_version" "sabre-secrets" {
     secret_id = var.secret-manager
