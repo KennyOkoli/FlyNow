@@ -1,0 +1,80 @@
+name: Deploy frontend task
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "application/web/**"
+
+defaults:
+  run:
+    working-directory: application/web
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+    test_image:
+      runs-on: ubuntu-latest
+      steps:
+        - name: pull repo
+          uses: actions/checkout@v4
+
+        - name: build_image
+          run: |
+               docker build -t frontend .
+               docker run -d -p 8000:80 -e ENDPOINT=http://localhost:3000 frontend
+
+        - name: test_container
+          run: |
+               sleep 5
+               curl -f http://localhost:8000
+
+    authenticate_push:
+      needs: test_image
+      runs-on: ubuntu-latest
+      environment: prod-frontend
+      steps:
+        - name: pull repo
+          uses: actions/checkout@v4
+
+        - name: get-aws-credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+             role-to-assume: ${{vars.AWS_ROLE}}
+             aws-region: ${{vars.AWS_REGION}}
+        
+        - name: Login to ecr
+          id: registry_name
+          uses: aws-actions/amazon-ecr-login@v2
+
+        - name: echo
+          id: tag
+          run: echo '${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}'
+
+        - name: build and push with docker buildx
+          uses: docker/build-push-action@v6
+          with:
+            context: ./application/web
+            file: ./application/web/Dockerfile
+            push: true
+            tags: ${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
+            cache-from: type=registry,ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:buildcache
+            cache-to: type=registry,ref=${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:buildcache,mode=max
+
+        - name: Render task definition
+          id: task-def
+          uses: aws-actions/amazon-ecs-render-task-definition@v1
+          with:
+             task-definition-family: ${{vars.TASK_FAMILY}}
+             container-name: ${{vars.CONTAINER_NAME}}
+             image: ${{steps.registry_name.outputs.registry}}/${{vars.ECR_REGISTRY}}:${{github.sha}}
+
+        - name: Update ecs
+          uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+          with:
+             task-definition: ${{steps.task-def.outputs.task-definition}}
+             service: ${{vars.ECS_SERVICE}}
+             cluster: ${{vars.ECS_CLUSTER}}
