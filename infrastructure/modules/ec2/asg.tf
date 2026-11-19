@@ -39,11 +39,37 @@ resource "aws_autoscaling_group" "ec2-autoscale" {
     }
 }
 
+resource "aws_autoscaling_group" "ec2-autoscale-fn" {
+    name = "ec2-autoscale-${var.env}"
+    vpc_zone_identifier = var.vpc-prv-subnets
+    desired_capacity = 2
+    min_size = 1
+    max_size = 4
+    health_check_type = "EC2"
+    health_check_grace_period = 20
+
+    launch_template {
+      id = aws_launch_template.ec2-template.id
+      version = aws_launch_template.ec2-template.latest_version
+    }
+
+    instance_refresh {
+      strategy = "Rolling"
+
+      preferences {
+        min_healthy_percentage = 50
+        instance_warmup = 300
+      }
+      triggers = ["launch_template"]
+    }
+}
+
+/*
 resource "aws_security_group" "ec2-compute-sg" {
     name = "ec2-task-sg"
     vpc_id = var.vpc_id
 }
-
+*/
 resource "aws_security_group" "compute-sg" {
     name = "compute-sg-${var.env}"
     vpc_id = var.vpc_id
@@ -66,9 +92,3 @@ resource "aws_security_group_rule" "ec2-rule-2" {
     from_port = 0
     to_port = 65535
 }
-
-# resource "aws_network_acl_association" "task-subnet-nacl" {
-#     count = 2
-#     network_acl_id = var.nacl
-#     subnet_id = var.vpc-prv-subnets[count.index]
-# }

@@ -10,6 +10,7 @@ resource "aws_ecs_service" "backend-service"{
     service_connect_configuration {
 
        enabled = true
+       # Do I have to specify the service discovery namespace?
        service {
          port_name = "http"
          discovery_name = "backend-tasks-${var.env}"
