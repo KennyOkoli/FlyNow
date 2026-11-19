@@ -2,7 +2,7 @@ variable "public-subnet" {}
 variable "ecs-sg-var" {}
 
 
-resource "aws_alb_target_group" "flynow-target-group" {
+/*resource "aws_alb_target_group" "flynow-target-group" {
     vpc_id = var.vpc_id
     target_type = "ip"
     protocol = "HTTP"
@@ -17,7 +17,7 @@ resource "aws_alb_target_group" "flynow-target-group" {
     healthy_threshold = 3
     unhealthy_threshold = 2
     }
-}
+}*/
 
 resource "aws_alb_target_group" "flynow-alb-target-group" {
     vpc_id = var.vpc_id
@@ -38,6 +38,14 @@ resource "aws_alb_target_group" "flynow-alb-target-group" {
 
 resource "aws_alb" "flynow-alb" {
     name = "flynow-alb"
+    security_groups = [aws_security_group.alb-sg.id]
+    subnets = var.public-subnet
+    internal = false
+    load_balancer_type = "application"
+}
+
+resource "aws_alb" "flynow-alb-new" {
+    name = "flynow-alb-${var.env}"
     security_groups = [aws_security_group.alb-sg.id]
     subnets = var.public-subnet
     internal = false
